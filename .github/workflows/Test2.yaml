@@ -32,10 +32,12 @@ jobs:
           PFX_CONTENTS: ${{ secrets.PFX_FILE }}
 
       - name: Build DuckStation UWP
-        run: |
-         # Use MSBuild to build the UWP project file
-         MSBuild /t:build /p:Configuration=Release /p:Platform=x64 duckstation.sln
-      
+        uses: microsoft/msbuild@v1
+        with:
+          targets: Build
+          configuration: Release
+          platform: x64
+
       - name: Sign UWP package
         run: |
           "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\SignTool.exe" sign /fd SHA256 /f certificate.pfx /p $PFX_PASSWORD /t http://timestamp.digicert.com/ /v *.appx
@@ -44,4 +46,3 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: DuckStation-UWP
-          
