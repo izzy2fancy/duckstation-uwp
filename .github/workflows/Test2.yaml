@@ -36,6 +36,7 @@ jobs:
         with:          
           arch: uwp
           export-path-to-vcvarsall: true
+          export-path-to-vs: true
           uwp: true
 
       - name: Build DuckStation UWP
