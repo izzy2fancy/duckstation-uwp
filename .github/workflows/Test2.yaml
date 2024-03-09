@@ -41,7 +41,7 @@ jobs:
       - name: Update manifest file
         run: |
           $version = "1.0.0.0"  # Update this with your desired version
-          $manifest = "path/to/Package.appxmanifest"
+          $manifest = "duckstation-uwp/src/duckstation-uwp/"
           $content = Get-Content $manifest
           $content -replace '(?<=<Identity Name=")([^"]+)(?=" Version="[^"]+")', $version | Set-Content $manifest
         shell: pwsh          
