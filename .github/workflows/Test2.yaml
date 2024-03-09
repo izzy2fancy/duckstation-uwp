@@ -12,7 +12,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Cache dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v4.0.1
         with:
           path: |
             dep/msvc
@@ -41,7 +41,7 @@ jobs:
       - name: Update manifest file
         run: |
           $version = "1.0.0.0"  # Update this with your desired version
-          $manifest = "duckstation-uwp/src/duckstation-uwp/Package.appxmanifest"
+          $manifest = "src/duckstation-uwp/Package.appxmanifest"
           $content = Get-Content $manifest
           $content -replace '(?<=<Identity Name=")([^"]+)(?=" Version="[^"]+")', $version | Set-Content $manifest
         shell: pwsh          
