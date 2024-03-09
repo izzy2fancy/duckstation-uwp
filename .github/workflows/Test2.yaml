@@ -33,8 +33,9 @@ jobs:
 
       - name: Build DuckStation UWP
         run: |
-         # Open Visual Studio solution and create App Packages
-         cmd /c "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\Common7\IDE\devenv.exe" duckstation.sln /Build "ReleaseUWP"
+         # Use MSBuild to build the UWP project file
+         MSBuild /t:build /p:Configuration=Release /p:Platform=x64 duckstation.sln
+      
       - name: Sign UWP package
         run: |
           "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\SignTool.exe" sign /fd SHA256 /f certificate.pfx /p $PFX_PASSWORD /t http://timestamp.digicert.com/ /v *.appx
