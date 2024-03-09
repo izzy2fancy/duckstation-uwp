@@ -33,9 +33,8 @@ jobs:
 
       - name: Setup MSVC Development Environment
         uses: TheMrMilchmann/setup-msvc-dev@v3.0.0
-        with:
-          msvc-version: 'latest'
-          uwp: true
+        with:          
+          arch: uwp
 
       - name: Build DuckStation UWP
         run: |
