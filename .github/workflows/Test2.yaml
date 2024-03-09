@@ -35,6 +35,8 @@ jobs:
         uses: TheMrMilchmann/setup-msvc-dev@v3.0.0
         with:          
           arch: uwp
+          export-path-to-vcvarsall: true
+          uwp: true
 
       - name: Build DuckStation UWP
         run: |
