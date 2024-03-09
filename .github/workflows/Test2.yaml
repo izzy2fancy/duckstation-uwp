@@ -11,6 +11,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: |
+            dep/msvc
+          key: dependencies-${{ runner.os }}
+
       - name: Install dependencies
         run: |
           choco install -y visualstudio2019buildtools
@@ -33,13 +40,13 @@ jobs:
 
       - name: Setup MSVC Development Environment
         uses: TheMrMilchmann/setup-msvc-dev@v3.0.0
-        with:          
-          arch: uwp          
+        with:
+          arch: x64
+          vs-version: 2019
           uwp: true
 
       - name: Build DuckStation UWP
-        run: |
-          msbuild duckstation.sln /t:Build /p:Configuration=Release /p:Platform=UWP
+        run: msbuild duckstation.sln /t:Build /p:Configuration=Release /p:Platform=UWP
 
       - name: Sign UWP package
         run: |
