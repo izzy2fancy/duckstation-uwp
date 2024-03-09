@@ -35,12 +35,9 @@ jobs:
         uses: microsoft/setup-msbuild@v1.0.3
 
       - name: Build DuckStation UWP
-        uses: microsoft/msbuild@v1
-        with:
-          targets: Build
-          configuration: Release
-          platform: x64
-
+        run: |
+          # Use MSBuild to build the UWP project file
+          "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin\MSBuild.exe" duckstation.sln /t:Build /p:Configuration=Release /p:Platform=x64      
       - name: Sign UWP package
         run: |
           "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\SignTool.exe" sign /fd SHA256 /f certificate.pfx /p $PFX_PASSWORD /t http://timestamp.digicert.com/ /v *.appx
