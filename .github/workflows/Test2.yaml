@@ -1,0 +1,47 @@
+name: Test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build_and_upload:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: |
+          choco install -y visualstudio2019buildtools
+          curl -L -o deps-x64.7z https://github.com/stenzek/duckstation-ext-qt-minimal/releases/download/latest/deps-x64.7z
+          7z x deps-x64.7z -odep/msvc
+
+      - name: Generate self-signed certificate and private key
+        run: |
+          $cert = New-SelfSignedCertificate -CertStoreLocation cert:\LocalMachine\My -DnsName "example.com" -KeyExportPolicy Exportable -KeyLength 2048 -KeyUsage DigitalSignature
+          $certBytes = $cert.Export([System.Security.Cryptography.X509Certificates.X509ContentType]::Pfx)
+          $certFile = "certificate.pfx"
+          [System.IO.File]::WriteAllBytes($certFile, $certBytes)
+        shell: pwsh
+
+      - name: Store .pfx file as encrypted secret
+        run: |
+          echo "$PFX_CONTENTS" > certificate.pfx
+        env:
+          PFX_CONTENTS: ${{ secrets.PFX_FILE }}
+
+      - name: Build DuckStation UWP
+        run: |
+          # Open Visual Studio solution and create App Packages
+          "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\Common7\IDE\devenv.exe" duckstation.sln /Build "ReleaseUWP"
+
+      - name: Sign UWP package
+        run: |
+          "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\SignTool.exe" sign /fd SHA256 /f certificate.pfx /p $PFX_PASSWORD /t http://timestamp.digicert.com/ /v *.appx
+
+      - name: Upload UWP package as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: DuckStation-UWP
+          path: *.appx
