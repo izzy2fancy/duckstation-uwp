@@ -111,6 +111,7 @@ private:
 
   static void StartCPUThread();
   static void StopCPUThread();
+  static void ProcessPlatformWindowResize(s32 width, s32 height, float scale);
   static void CPUThreadEntryPoint();
   static void CPUThreadMainLoop();
   static void StartAsyncOp(std::function<void(ProgressCallback*)> callback);
@@ -259,6 +260,10 @@ std::optional<WindowInfo> WinRTHost::GetPlatformWindowInfo()
 
     if (s_corewind)
     {
+      // changing these is a quest of futility, take it from me
+      // UWP corewind Bounds are always 1080p. no matter what.
+      // it's strange and fucked up and accessing the Bounds
+      // sometimes decides it just Feels like crashing. don't trust the corewind.
       u32 width = 1920, height = 1080;
       float scale = 1.0;
       if (is_running_on_xbox)
@@ -310,6 +315,15 @@ void WinRTHost::StopCPUThread()
       s_cpu_thread_event_posted.notify_one();
     }
     s_cpu_thread.Join();
+}
+
+void WinRTHost::ProcessPlatformWindowResize(s32 width, s32 height, float scale)
+{
+  Host::RunOnCPUThread([width, height, scale]() {
+    g_gpu_device->ResizeWindow(width, height, scale);
+    ImGuiManager::WindowResized();
+    ::System::HostDisplayResized();
+  });
 }
 
 
@@ -992,6 +1006,27 @@ struct App : implements<App, IFrameworkViewSource, IFrameworkView>
 
     // the rest of initialization happens on the CPU thread.
     WinRTHost::StartCPUThread();
+
+    // previously, when running on Windows, the emulator would run at 1080p stretched no matter what.
+    // now, when running on Windows, it will automatically enter fullscreen and dynamically size the
+    // viewport with the window size. it will also scale the OSD to a reasonable size
+    if (!WinRTHost::is_running_on_xbox)
+    {
+      ViewManagement::ApplicationView::GetForCurrentView().TryEnterFullScreenMode();
+      window.SizeChanged([&](const auto&, const WindowSizeChangedEventArgs& args) {
+        auto new_size = args.Size();
+
+        WinRTHost::ProcessPlatformWindowResize((s32)new_size.Width, (s32)new_size.Height, 1.0f);
+
+        // map the OSD scale linearly to a scale where a scale of 2.0 (200%) is equal to 1080p, and a scale of 1.0 (100%)
+        // is equal to 540p, then clamp that between those two. we only do this on Windows because it's the only platform
+        // that it makes sense to do so on; Xbox users should adjust manually for their TV sizes and such.
+
+        float osd_scale = std::clamp((1.0f + ((new_size.Height - 540.0f) / (1080.0f - 540.0f)) * (2.0f - 1.0f)), 1.0f, 2.0f);
+
+        ImGuiManager::SetGlobalScale(osd_scale);
+      });
+    }
 
     // Refresh inputs
     window.Dispatcher().RunAsync(CoreDispatcherPriority::Normal, []() {
