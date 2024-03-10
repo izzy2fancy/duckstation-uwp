@@ -1,0 +1,50 @@
+name: Build for Windows
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+
+    - name: Install Node.js 12
+      uses: actions/setup-node@master
+      with:
+        node-version: '12.x'
+        registry-url: 'https://npm.pkg.github.com'
+
+    - name: Install Visual Studio 2017
+      run: choco install visualstudio2017buildtools
+
+    - name: Install Visual Studio 2017 Workloads
+      shell: powershell
+      run: ./vs2017.ps1
+
+    - name: Import code signing certificate
+      shell: powershell
+      run: ./certificate.ps1
+
+    - name: Install Cordova
+      run: yarn global add cordova@9
+
+    - name: Install dependencies
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.YARN_TOKEN }}
+      run: yarn install
+
+    - name: Build
+      shell: bash
+      run: yarn build
+
+    - name: Cordova
+      shell: bash
+      env:
+        MSBUILDDIR: '/C/Program Files (x86)/Microsoft Visual Studio/2017/BuildTools/MSBuild/15.0/Bin'
+        NODE_AUTH_TOKEN: ${{ secrets.YARN_TOKEN }}
+      run: >
+        cordova prepare windows &&
+        cordova build windows --release --archs="x86 x64" --bundle --win --buildConfig=build.json
