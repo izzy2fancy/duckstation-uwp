@@ -234,9 +234,7 @@
     <GenerateTestArtifacts>True</GenerateTestArtifacts>
     <AppxBundle>Never</AppxBundle>
     <AppxBundlePlatforms>x64</AppxBundlePlatforms>
-    <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
-    <PackageCertificateKeyFile>duckstation-uwp_TemporaryKey.pfx</PackageCertificateKeyFile>
-    <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
+    <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>   <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
     <AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseUWP|x64'">
@@ -515,7 +513,6 @@
     <Text Include="resources\sounds\achievements\README.txt" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="duckstation-uwp_TemporaryKey.pfx" />
     <None Include="resources\gamedb.yaml">
       <DeploymentContent>true</DeploymentContent>
     </None>
