@@ -12,7 +12,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Check if PFX file exists
-        run: ls -la /github/workspace/duckstation-uwp_TemporaryKey.pfx
+        run: Get-ChildItem -Path /github/workspace/duckstation-uwp_TemporaryKey.pfx
 
       - name: Restore NuGet packages
         run: nuget restore duckstation.sln
