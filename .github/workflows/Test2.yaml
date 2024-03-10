@@ -21,13 +21,13 @@ jobs:
         run: |
           $cert = New-SelfSignedCertificate -CertStoreLocation cert:\LocalMachine\My -DnsName "example.com" -KeyExportPolicy Exportable -KeyLength 2048 -KeyUsage DigitalSignature
           $certBytes = $cert.Export([System.Security.Cryptography.X509Certificates.X509ContentType]::Pfx)
-          $certFile = "certificate.pfx"
+          $certFile = "duckstation-uwp_TemporaryKey.pfx"
           [System.IO.File]::WriteAllBytes($certFile, $certBytes)
         shell: pwsh
 
       - name: Store .pfx file as encrypted secret
         run: |
-          echo "$PFX_CONTENTS" > certificate.pfx
+          echo "$PFX_CONTENTS" > duckstation-uwp_TemporaryKey.pfx
         env:
           PFX_CONTENTS: ${{ secrets.PFX_FILE }}
 
