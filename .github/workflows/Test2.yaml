@@ -5,14 +5,26 @@ on:
 
 jobs:
   build_and_upload:
-    runs-on: windows-latest
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest]
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Check if PFX file exists
-        run: Get-ChildItem -Path /github/workspace
+      - name: Print the path of the potential repository directory
+        if: startsWith(runner.os, 'Linux')
+        run: echo "Repository directory:$GITHUB_WORKSPACE"
+   
+      - name: List contents of the potential repository directory
+        run: ls -la D:\a\duckstation-uwp\duckstation-uwp
+
+      - name: Print the path of the potential repository directory
+        run: Write-Host "Repository directory: D:\a\duckstation-uwp\duckstation-uwp"
+        shell: pwsh
       
       - name: Restore NuGet packages
         run: nuget restore duckstation.sln
