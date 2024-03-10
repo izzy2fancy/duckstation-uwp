@@ -65,7 +65,6 @@
     <ClInclude Include="http_downloader.h" />
     <ClInclude Include="gpu_framebuffer_manager.h" />
     <ClInclude Include="imgui_animated.h" />
-    <ClInclude Include="http_downloader_uwp.h" />
     <ClInclude Include="http_downloader_winhttp.h" />
     <ClInclude Include="opengl_context.h" />
     <ClInclude Include="opengl_context_agl.h" />
@@ -136,7 +135,6 @@
     <ClCompile Include="http_downloader.cpp" />
     <ClCompile Include="metal_device.mm" />
     <ClCompile Include="metal_stream_buffer.mm" />
-    <ClCompile Include="http_downloader_uwp.cpp" />
     <ClCompile Include="cubeb_audio_stream.cpp" />
     <ClCompile Include="dinput_source.cpp" />
     <ClCompile Include="opengl_device.cpp" />

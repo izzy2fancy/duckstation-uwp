@@ -189,6 +189,7 @@ enum class SettingsPage
   PostProcessing,
   Audio,
   Achievements,
+  Paths,
   Advanced,
   Count
 };
@@ -291,7 +292,7 @@ static void DrawControllerSettingsPage();
 static void DrawHotkeySettingsPage();
 static void DrawAchievementsSettingsPage();
 static void DrawAchievementsLoginWindow();
-static void OpenAchievementsLoginWindow();
+static void DrawPathsSettingsPage();
 static void DrawAdvancedSettingsPage();
 
 static bool IsEditingGameSettings(SettingsInterface* bsi);
@@ -2474,14 +2475,15 @@ void FullscreenUI::DrawSettingsWindow()
     static constexpr const char* global_icons[] = {
       ICON_FA_TV,           ICON_FA_DICE_D20,    ICON_FA_COGS,   ICON_PF_MICROCHIP,
       ICON_PF_PICTURE,      ICON_FA_MAGIC,       ICON_PF_SOUND,  ICON_PF_GAMEPAD_ALT,
-      ICON_PF_KEYBOARD_ALT, ICON_PF_MEMORY_CARD, ICON_FA_TROPHY, ICON_FA_EXCLAMATION_TRIANGLE};
+      ICON_PF_KEYBOARD_ALT, ICON_PF_MEMORY_CARD, ICON_FA_TROPHY, ICON_FA_FOLDER_OPEN, ICON_FA_EXCLAMATION_TRIANGLE};
     static constexpr const char* per_game_icons[] = {ICON_FA_PARAGRAPH,   ICON_FA_HDD,    ICON_FA_COGS,
                                                      ICON_PF_PICTURE,     ICON_PF_SOUND,  ICON_PF_GAMEPAD_ALT,
                                                      ICON_PF_MEMORY_CARD, ICON_FA_TROPHY, ICON_FA_EXCLAMATION_TRIANGLE};
     static constexpr SettingsPage global_pages[] = {
       SettingsPage::Interface, SettingsPage::Console,        SettingsPage::Emulation,    SettingsPage::BIOS,
       SettingsPage::Display,   SettingsPage::PostProcessing, SettingsPage::Audio,        SettingsPage::Controller,
-      SettingsPage::Hotkey,    SettingsPage::MemoryCards,    SettingsPage::Achievements, SettingsPage::Advanced};
+      SettingsPage::Hotkey,    SettingsPage::MemoryCards,    SettingsPage::Achievements, SettingsPage::Paths,
+      SettingsPage::Advanced};
     static constexpr SettingsPage per_game_pages[] = {
       SettingsPage::Summary,     SettingsPage::Console,      SettingsPage::Emulation,
       SettingsPage::Display,     SettingsPage::Audio,        SettingsPage::Controller,
@@ -2491,7 +2493,7 @@ void FullscreenUI::DrawSettingsWindow()
        FSUI_NSTR("Emulation Settings"), FSUI_NSTR("BIOS Settings"), FSUI_NSTR("Controller Settings"),
        FSUI_NSTR("Hotkey Settings"), FSUI_NSTR("Memory Card Settings"), FSUI_NSTR("Graphics Settings"),
        FSUI_NSTR("Post-Processing Settings"), FSUI_NSTR("Audio Settings"), FSUI_NSTR("Achievements Settings"),
-       FSUI_NSTR("Advanced Settings")}};
+       "Paths", FSUI_NSTR("Advanced Settings")}};
 
     const bool game_settings = IsEditingGameSettings(GetEditingSettingsInterface());
     const u32 count =
@@ -2609,6 +2611,10 @@ void FullscreenUI::DrawSettingsWindow()
 
       case SettingsPage::Achievements:
         DrawAchievementsSettingsPage();
+        break;
+
+      case SettingsPage::Paths:
+        DrawPathsSettingsPage();
         break;
 
       case SettingsPage::Advanced:
@@ -4607,8 +4613,7 @@ void FullscreenUI::DrawAchievementsSettingsPage()
                    ImGuiFullscreen::LAYOUT_MENU_BUTTON_HEIGHT_NO_SUMMARY);
 
       if (MenuButton(FSUI_ICONSTR(ICON_FA_KEY, "Login"), FSUI_CSTR("Logs in to RetroAchievements.")))
-        // Host::OnAchievementsLoginRequested(Achievements::LoginRequestReason::UserInitiated);
-        OpenAchievementsLoginWindow();
+        Host::OnAchievementsLoginRequested(Achievements::LoginRequestReason::UserInitiated);
     }
 
     MenuHeading(FSUI_CSTR("Current Game"));
@@ -4641,6 +4646,22 @@ void FullscreenUI::DrawAchievementsSettingsPage()
                    LAYOUT_MENU_BUTTON_HEIGHT_NO_SUMMARY);
     }
   }
+
+  EndMenuButtons();
+}
+
+void FullscreenUI::DrawPathsSettingsPage()
+{
+  SettingsInterface* bsi = GetEditingSettingsInterface();
+
+  BeginMenuButtons();
+
+  MenuHeading("Data Locations");
+  DrawFolderSetting(bsi, ICON_FA_FOLDER " Covers Directory", "Folders", "Covers", EmuFolders::Covers);
+  DrawFolderSetting(bsi, ICON_FA_FROWN " Cheats Directory", "Folders", "Cheats", EmuFolders::Cheats);
+  DrawFolderSetting(bsi, ICON_FA_MAGIC " Dumps Directory", "Folders", "Dumps", EmuFolders::Dumps);
+  DrawFolderSetting(bsi, ICON_FA_CAMERA " Screenshots Directory", "Folders", "Screenshots", EmuFolders::Screenshots);
+  DrawFolderSetting(bsi, ICON_PF_PICTURE " Texture Replacements Directory", "Folders", "Textures", EmuFolders::Textures);
 
   EndMenuButtons();
 }
@@ -6360,23 +6381,6 @@ void FullscreenUI::DrawAchievementsLoginWindow()
 
   if (ImGui::BeginPopupModal("Achievements Login", &s_achievements_login_window_open, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize))
   {
-    ImGui::TextWrapped("RetroAchievements is unavailable in this release as it is currently non-functional and will be fixed in a later release.");
-    ImGui::NewLine();
-    ImGui::TextWrapped("There is currently no workaround; please do not ask for support with RetroAchievements in this release.");
-    ImGui::NewLine();
-    ImGui::TextWrapped("");
-    BeginMenuButtons();
-    ImGui::SetCursorPosY(ImGui::GetCursorPosY() + LayoutScale(10.0f));
-    if (MenuButtonWithoutSummary(FSUI_CSTR("OK"), true, LAYOUT_MENU_BUTTON_HEIGHT_NO_SUMMARY, g_large_font,
-                                 ImVec2(0.5f, 0.0f)))
-    {
-      s_achievements_login_window_open = false;
-      ImGui::CloseCurrentPopup();
-    }
-    EndMenuButtons();
-
-    ImGui::EndPopup();
-    /* RetroAchievements are stubbed out here due to them not actually working properly
     ImGui::TextWrapped("Please enter your user name and password for retroachievements.org.");
     ImGui::NewLine();
     ImGui::TextWrapped("Your password will not be saved in DuckStation-UWP, an access token will be generated and used instead.");
@@ -6403,6 +6407,11 @@ void FullscreenUI::DrawAchievementsLoginWindow()
     {
       Error error;
       const bool result = Achievements::Login(username, password, &error);
+      if (!result)
+      {
+        Host::AddIconOSDMessage("uwp_achievements_login_failure", ICON_FA_EXCLAMATION_TRIANGLE,
+                                fmt::format("Login failed: {}", error.GetDescription()));
+      }
       std::memset(username, 0, sizeof(username));
       std::memset(password, 0, sizeof(password));
       s_achievements_login_window_open = false;
@@ -6420,7 +6429,6 @@ void FullscreenUI::DrawAchievementsLoginWindow()
     EndMenuButtons();
 
     ImGui::EndPopup();
-    */
   }
 
   ImGui::PopFont();
@@ -6488,13 +6496,14 @@ void FullscreenUI::DrawAboutWindow()
     ImGui::NewLine();
 
     BeginMenuButtons();
+#ifndef _UWP // these either do nothing or crash depending on who your allegiance is to; let's just get rid of them for now.
     if (ActiveButton(FSUI_ICONSTR(ICON_FA_GLOBE, "GitHub Repository"), false))
       ExitFullscreenAndOpenURL("https://github.com/irixaligned/duckstation-uwp/");
     if (ActiveButton(FSUI_ICONSTR(ICON_FA_BUG, "Issue Tracker"), false))
       ExitFullscreenAndOpenURL("https://github.com/irixaligned/duckstation-uwp/issues");
     if (ActiveButton(FSUI_ICONSTR(ICON_FA_COMMENT, "Discord Server"), false))
       ExitFullscreenAndOpenURL("https://discord.gg/xboxemus");
-
+#endif
     if (ActiveButton(FSUI_ICONSTR(ICON_FA_WINDOW_CLOSE, "Close"), false))
     {
       ImGui::CloseCurrentPopup();

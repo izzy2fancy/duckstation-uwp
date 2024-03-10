@@ -33,7 +33,8 @@
 #include "util/ini_settings_interface.h"
 #include "util/input_manager.h"
 #include "util/platform_misc.h"
-
+#include "IconsFontAwesome5.h"
+#include "IconsPromptFont.h"
 #include "UWPUtils.h"
 
 #include <thread>
@@ -61,6 +62,8 @@ using namespace winrt::Windows::UI::Composition;
 
 static constexpr u32 SETTINGS_VERSION = 3;
 static constexpr auto CPU_THREAD_POLL_INTERVAL = std::chrono::milliseconds(8); // how often we'll poll controllers when paused
+
+std::unique_ptr<NoGUIPlatform> g_nogui_window;
 
 namespace WinRTHost {
 // this sucks. a necessary evil, i suppose...
@@ -147,15 +150,6 @@ private:
 // if the program is running on an Xbox console, set Xbox specific options
 void WinRTHost::SetXboxSettings(INISettingsInterface& si)
 {
-  if (!is_running_on_xbox) { return; };
-  si.SetStringValue("GPU", "Renderer", "D3D12");
-
-  si.SetBoolValue("Main", "SyncToHostRefreshRate", true);
-  si.SetStringValue("Display", "SyncMode", "VSync");
-  si.SetBoolValue("Display", "DisplayAllFrames", true);
-  si.SetFloatValue("Display", "MaxFPS", 60.0f);
-
-  si.SetStringValue("CPU", "FastmemMode", "LUT");
   si.SetStringValue("Main", "ControllerBackend", "XInput");
 
   // Set up an analog controller in port 1.
@@ -189,6 +183,18 @@ void WinRTHost::SetXboxSettings(INISettingsInterface& si)
 
   // we have chords!
   si.SetStringValue("Hotkeys", "OpenPauseMenu", "XInput-0/LeftStick & XInput-0/RightStick");
+
+  si.SetStringValue("CPU", "FastmemMode", "LUT");
+
+  si.SetBoolValue("Display", "DisplayAllFrames", true);
+  si.SetBoolValue("Main", "SyncToHostRefreshRate", true);
+  si.SetStringValue("Display", "SyncMode", "VSync");
+
+  if (is_running_on_xbox)
+  {
+    si.SetStringValue("GPU", "Renderer", "D3D12");
+    si.SetFloatValue("Display", "MaxFPS", 60.0f);
+  }
 }
 
 bool WinRTHost::InitializeConfig()
@@ -509,14 +515,14 @@ void Host::AddFixedInputBindings(SettingsInterface& si)
 
 void Host::OnInputDeviceConnected(const std::string_view& identifier, const std::string_view& device_name)
 {
-  Host::AddKeyedOSDMessage(fmt::format("InputDeviceConnected-{}", identifier),
-                           fmt::format("Input device {0} ({1}) connected.", device_name, identifier), 10.0f);
+  Host::AddIconOSDMessage(fmt::format("InputDeviceConnected-{}", identifier), ICON_FA_GAMEPAD,
+                          fmt::format("Controller {0} ({1}) connected.", device_name, identifier), 10.0f);
 }
 
 void Host::OnInputDeviceDisconnected(const std::string_view& identifier)
 {
-  Host::AddKeyedOSDMessage(fmt::format("InputDeviceConnected-{}", identifier),
-                           fmt::format("Input device {} disconnected.", identifier), 10.0f);
+  Host::AddIconOSDMessage(fmt::format("InputDeviceConnected-{}", identifier), ICON_FA_GAMEPAD,
+                          fmt::format("Controller {} disconnected.", identifier), 10.0f);
 }
 
 s32 Host::Internal::GetTranslatedStringImpl(const std::string_view& context, const std::string_view& msg, char* tbuf,
@@ -615,10 +621,12 @@ void Host::RequestResizeHostDisplay(s32 width, s32 height)
 
 void Host::OpenURL(const std::string_view& url)
 {
-  winrt::Windows::Foundation::Uri m_uri{winrt::to_hstring(url)};
-  auto asyncOperation = winrt::Windows::System::Launcher::LaunchUriAsync(m_uri);
-  asyncOperation.Completed([](winrt::Windows::Foundation::IAsyncOperation<bool> const& sender,
-                              winrt::Windows::Foundation::AsyncStatus const asyncStatus) { return; });
+    // opening links as of current is not really possible since LaunchUriAsync hates me.
+    // why? no idea! doesn't work even if i run it on the UI thread!
+    // or if I run it synchronously OR async! or do literally anything!
+    // WinRT is evil. I don't even care why it's broken anymore
+    // i figure it's better for it to do nothing than to crash with a general purpose exception that it
+    // doesn't explain, so we're back to a no-op. damn you microsoft and your awful awful async garbage
 }
 
 bool Host::CopyTextToClipboard(const std::string_view& text)
@@ -639,13 +647,22 @@ void Host::OnGameChanged(const std::string& disc_path, const std::string& game_s
 
 void Host::OnAchievementsLoginRequested(Achievements::LoginRequestReason reason)
 {
-  //ImGui::OpenPopup("Achievements Login");
-  //FullscreenUI::DrawAchievementsLoginWindow();
+  if (reason == Achievements::LoginRequestReason::TokenInvalid) {
+    Host::AddIconOSDMessage("uwp_achievements_login_requested", ICON_PF_INFORMATION,
+                            "RetroAchievements token is invalid, displaying login window.", 5.0f);
+  }
+  FullscreenUI::OpenAchievementsLoginWindow();
 }
 
 void Host::OnAchievementsLoginSuccess(const char* username, u32 points, u32 sc_points, u32 unread_messages)
 {
-  // noop
+  Host::AddIconOSDMessage("uwp_achievements_login_success", ICON_FA_TROPHY,
+                          fmt::format("Logged in as \"{}\"! Points: {} ({} softcore)", username, points, sc_points), 5.0f);
+  if (unread_messages)
+  {
+    Host::AddIconOSDMessage("uwp_achievements_login_success_unreads", ICON_FA_ENVELOPE,
+                            fmt::format("You have {} unread messages.", unread_messages), 5.0f);
+  }
 }
 
 void Host::OnAchievementsRefreshed()
@@ -655,7 +672,16 @@ void Host::OnAchievementsRefreshed()
 
 void Host::OnAchievementsHardcoreModeChanged(bool enabled)
 {
-  // noop
+  // these had icons but random icons seem to just not work with duckstation
+  // for what would appear to be zero reason
+  if (enabled)
+  {
+    Host::AddKeyedOSDMessage("uwp_achievements_hardcore_enabled", "Hardcore mode enabled! Good luck..", 7.5f);
+  }
+  else
+  {
+    Host::AddKeyedOSDMessage("uwp_achievements_hardcore_enabled", "Hardcore mode disabled. Safety, at last..", 7.5f);
+  }
 }
 
 void Host::SetMouseMode(bool relative, bool hide_cursor)
@@ -1010,7 +1036,7 @@ struct App : implements<App, IFrameworkViewSource, IFrameworkView>
 
   void OnKeyInput(const IInspectable&, const winrt::Windows::UI::Core::CharacterReceivedEventArgs& args)
   {
-    Log_InfoPrintf("%d", args.KeyCode());
+    Log_TracePrintf("Got key input with keycode: %d", args.KeyCode());
     ImGuiManager::AddCharacterInput(std::move(args.KeyCode()));
   }
 };

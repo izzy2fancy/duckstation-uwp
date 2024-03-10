@@ -954,7 +954,7 @@ void ImGuiManager::AddTextInput(std::string str)
 
 void ImGuiManager::AddCharacterInput(int code)
 {
-  if (ImGuiManager::WantsTextInput)
+  if (ImGuiManager::WantsTextInput())
   {
     Host::RunOnCPUThread([code = std::move(code)]() {
       if (!ImGui::GetCurrentContext())

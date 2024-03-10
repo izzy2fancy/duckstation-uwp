@@ -2,7 +2,6 @@
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\..\dep\msvc\vsprops\Configurations.props" />
   <ItemGroup>
-    <ClInclude Include="http_downloader_uwp.h" />
     <ClInclude Include="gpu_types.h" />
     <ClInclude Include="image.h" />
     <ClInclude Include="imgui_animated.h" />
@@ -187,9 +186,10 @@
     <ClCompile Include="http_downloader_curl.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="http_downloader_uwp.cpp" />
     <ClCompile Include="http_downloader_winhttp.cpp">
       <ExcludedFromBuild Condition="'$(BuildingForUWP)'=='true'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseUWP|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugUWP|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="image.cpp" />
     <ClCompile Include="imgui_fullscreen.cpp" />
@@ -202,23 +202,23 @@
     <ClCompile Include="cd_subchannel_replacement.cpp" />
     <ClCompile Include="opengl_context.cpp">
       <ExcludedFromBuild Condition="'$(Platform)'=='ARM64'">true</ExcludedFromBuild>
-	  <ExcludedFromBuild Condition="'$(Configuration)'=='DebugUWP' Or '$(Configuration)'=='ReleaseUWP'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)'=='DebugUWP' Or '$(Configuration)'=='ReleaseUWP'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="opengl_context_egl.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
-	  <ExcludedFromBuild Condition="'$(Configuration)'=='DebugUWP' Or '$(Configuration)'=='ReleaseUWP'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)'=='DebugUWP' Or '$(Configuration)'=='ReleaseUWP'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="opengl_context_egl_wayland.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
-	  <ExcludedFromBuild Condition="'$(Configuration)'=='DebugUWP' Or '$(Configuration)'=='ReleaseUWP'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)'=='DebugUWP' Or '$(Configuration)'=='ReleaseUWP'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="opengl_context_egl_x11.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
-	  <ExcludedFromBuild Condition="'$(Configuration)'=='DebugUWP' Or '$(Configuration)'=='ReleaseUWP'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)'=='DebugUWP' Or '$(Configuration)'=='ReleaseUWP'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="opengl_context_wgl.cpp">
       <ExcludedFromBuild Condition="'$(Platform)'=='ARM64'">true</ExcludedFromBuild>
-	  <ExcludedFromBuild Condition="'$(Configuration)'=='DebugUWP' Or '$(Configuration)'=='ReleaseUWP'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)'=='DebugUWP' Or '$(Configuration)'=='ReleaseUWP'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="opengl_device.cpp">
       <ExcludedFromBuild Condition="'$(Platform)'=='ARM64'">true</ExcludedFromBuild>
