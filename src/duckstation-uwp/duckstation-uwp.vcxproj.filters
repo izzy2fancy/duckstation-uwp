@@ -141,8 +141,7 @@
     <Font Include="resources\fonts\Roboto-Regular.ttf" />
     <Font Include="resources\fonts\RobotoMono-Medium.ttf" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="duckstation-uwp_TemporaryKey.pfx" />
+  <ItemGroup>    
     <None Include="resources\gamedb.yaml" />
     <None Include="resources\discdb.yaml" />
     <None Include="resources\shaders\Cccalibrator.glsl" />
