@@ -36,7 +36,8 @@ jobs:
 
       - name: Use DuckStation PFX
         run: echo "${{ secrets.DUCKSTATION_PFX }}" > duckstation-uwp_TemporaryKey.pfx
-
+        
+      
       - name: Build DuckStation x64
         run: msbuild duckstation.sln /t:Build /p:Configuration=ReleaseUWP /p:Platform=x64   
 
