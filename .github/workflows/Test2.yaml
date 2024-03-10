@@ -17,14 +17,7 @@ jobs:
 
       - name: Print the path of the potential repository directory
         if: startsWith(runner.os, 'Linux')
-        run: echo "Repository directory:$GITHUB_WORKSPACE"
-   
-      - name: List contents of the potential repository directory
-        run: ls -la D:\a\duckstation-uwp\duckstation-uwp
-
-      - name: Print the path of the potential repository directory
-        run: Write-Host "Repository directory: D:\a\duckstation-uwp\duckstation-uwp"
-        shell: pwsh
+        run: bash print_repo_dir.sh
       
       - name: Restore NuGet packages
         run: nuget restore duckstation.sln
