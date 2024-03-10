@@ -13,7 +13,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          choco install -y visualstudio2022buildtools
+          choco install -y visualstudio2019buildtools
           curl -L -o deps-x64.7z https://github.com/stenzek/duckstation-ext-qt-minimal/releases/download/latest/deps-x64.7z
           7z x deps-x64.7z -odep/msvc
 
