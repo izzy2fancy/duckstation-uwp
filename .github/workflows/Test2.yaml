@@ -11,13 +11,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Cache dependencies
-        uses: actions/cache@v4.0.1
-        with:
-          path: |
-            dep/msvc
-          key: dependencies-${{ runner.os }}
-
       - name: Install dependencies
         run: |
           choco install -y visualstudio2017buildtools
@@ -54,7 +47,7 @@ jobs:
           uwp: true
 
       - name: Build DuckStation x64
-        run: msbuild duckstation.sln /t:Build /p:Configuration=Release /p:Platform=UWP
+        run: msbuild duckstation.sln /t:Build /p:Configuration=Release /p:Platform=x64
 
       - name: Sign UWP package
         run: |
