@@ -5,11 +5,7 @@ on:
 
 jobs:
   build_and_upload:
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        os: [windows-latest, ubuntu-latest]
+    runs-on: windows-latest
 
     steps:
       - name: Checkout repository
