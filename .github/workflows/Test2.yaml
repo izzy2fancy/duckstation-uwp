@@ -35,16 +35,16 @@ jobs:
           uwp: true
 
       - name: Use DuckStation PFX
-        run: echo "${{ secrets.DUCKSTATION_PFX }}" > /duckstation-uwp_TemporaryKey.pfx
-          
+        run: echo "${{ secrets.DUCKSTATION_PFX }}" > duckstation-uwp_TemporaryKey.pfx
+
       - name: Build DuckStation x64
         run: msbuild duckstation.sln /t:Build /p:Configuration=ReleaseUWP /p:Platform=x64   
 
       - name: Sign UWP package
         run: |
-          "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\SignTool.exe" sign /fd SHA256 /f duckstation-uwp_TemporaryKey.pfx /p $PFX_PASSWORD /t http://timestamp.digicert.com/ /v *.appx
+          "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\SignTool.exe" sign /fd SHA256 /f duckstation-uwp_TemporaryKey.pfx /p ${{ secrets.PFX_PASSWORD }} /t http://timestamp.digicert.com/ /v *.appx
 
       - name: Upload UWP package as artifact
         uses: actions/upload-artifact@v2
         with:
-          name: DuckStation-UWP
+          name: DuckStation-UWP          
