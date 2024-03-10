@@ -1,53 +1,32 @@
- name: Test
+name: Test
 
- on:
+on:
   workflow_dispatch:
 
-   jobs:
-       build_and_upload:
-       runs-on: windows-latest
+jobs:
+  build_and_upload:
+    runs-on: windows-latest
 
-       steps:
-       - name: Checkout repository
-         uses: actions/checkout@v2
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-       - name: Restore NuGet packages
-         run: nuget restore duckstation.sln
+      - name: Restore NuGet packages
+        run: nuget restore duckstation.sln
 
-       - name: Install dependencies
-         run: |
+      - name: Install dependencies
+        run: |
           choco install -y visualstudio2019buildtools
           curl -L -o deps-x64.7z https://github.com/stenzek/duckstation-ext-qt-minimal/releases/download/latest/deps-x64.7z
           7z x deps-x64.7z -odep/msvc
 
-       - name: Update manifest file
-         run: |
+      - name: Update manifest file
+        run: |
           $version = "1.0.0.0"
           $manifest = "src/duckstation-uwp/Package.appxmanifest"
           $content = Get-Content $manifest
           $content -replace '(?<=<Identity Name=")([^"]+)(?=" Version="[^"]+")', $version | Set-Content $manifest
-         shell: pwsh
-
-       - name: Setup MSVC Development Environment
-         uses: TheMrMilchmann/setup-msvc-dev@v3.0.0
-         with:
-          arch: x64                  
-          uwp: true
-
-       - name: Use DuckStation PFX
-         run: echo "${{ secrets.DUCKSTATION_PFX }}" > duckstation-uwp_TemporaryKey.pfx
-
-       - name: Build DuckStation x64
-         run: msbuild duckstation.sln /t:Build /p:Configuration=ReleaseUWP /p:Platform=x64   
-
-       - name: Sign UWP package
-         run: |
-         "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\SignTool.exe" sign /fd SHA256 /f duckstation-uwp_TemporaryKey.pfx /p ${{ secrets.PFX_PASSWORD }} /t http://timestamp.digicert.com/ /v *.appx
-
-      - name: Upload UWP package as artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: DuckStation-UWP
+        shell: pwsh
 
       - name: Setup MSVC Development Environment
         uses: TheMrMilchmann/setup-msvc-dev@v3.0.0
@@ -63,9 +42,9 @@
 
       - name: Sign UWP package
         run: |
-         "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\SignTool.exe" sign /fd SHA256 /f duckstation-uwp_TemporaryKey.pfx /p ${{ secrets.PFX_PASSWORD }} /t http://timestamp.digicert.com/ /v *.appx
+          "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\SignTool.exe" sign /fd SHA256 /f duckstation-uwp_TemporaryKey.pfx /p ${{ secrets.PFX_PASSWORD }} /t http://timestamp.digicert.com/ /v *.appx
 
       - name: Upload UWP package as artifact
         uses: actions/upload-artifact@v2
         with:
-        name: DuckStation-UWP
+          name: DuckStation-UWP
