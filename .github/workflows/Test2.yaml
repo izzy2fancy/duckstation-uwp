@@ -20,6 +20,23 @@ jobs:
           curl -L -o deps-x64.7z https://github.com/stenzek/duckstation-ext-qt-minimal/releases/download/latest/deps-x64.7z
           7z x deps-x64.7z -odep/msvc
 
+      - name: Update manifest file
+        run: |
+          $version = "1.0.0.0"  # Update this with your desired version
+          $manifest = "src/duckstation-uwp/Package.appxmanifest"
+          $content = Get-Content $manifest
+          $content -replace '(?<=<Identity Name=")([^"]+)(?=" Version="[^"]+")', $version | Set-Content $manifest
+        shell: pwsh
+
+      - name: Setup MSVC Development Environment
+        uses: TheMrMilchmann/setup-msvc-dev@v3.0.0
+        with:
+          arch: x64                  
+          uwp: true
+
+      - name: Build DuckStation x64
+        run: msbuild duckstation.sln /t:Build /p:Configuration=ReleaseUWP /p:Platform=x64
+
       - name: Generate self-signed certificate and private key
         run: |
           $cert = New-SelfSignedCertificate -CertStoreLocation cert:\LocalMachine\My -DnsName "example.com" -KeyExportPolicy Exportable -KeyLength 2048 -KeyUsage DigitalSignature
@@ -32,23 +49,6 @@ jobs:
         run: |
           mv duckstation-uwp_TemporaryKey.pfx $GITHUB_WORKSPACE/duckstation-uwp_TemporaryKey.pfx
         if: success()
-
-      - name: Update manifest file
-        run: |
-          $version = "1.0.0.0"  # Update this with your desired version
-          $manifest = "src/duckstation-uwp/Package.appxmanifest"
-          $content = Get-Content $manifest
-          $content -replace '(?<=<Identity Name=")([^"]+)(?=" Version="[^"]+")', $version | Set-Content $manifest
-        shell: pwsh          
-
-      - name: Setup MSVC Development Environment
-        uses: TheMrMilchmann/setup-msvc-dev@v3.0.0
-        with:
-          arch: x64                  
-          uwp: true
-
-      - name: Build DuckStation x64
-        run: msbuild duckstation.sln /t:Build /p:Configuration=ReleaseUWP /p:Platform=x64
 
       - name: Sign UWP package
         run: |
