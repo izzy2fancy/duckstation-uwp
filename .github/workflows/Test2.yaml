@@ -34,25 +34,16 @@ jobs:
           arch: x64                  
           uwp: true
 
+          
+      - name: Use DuckStation PFX
+        run: echo "${{ secrets.DUCKSTATION_PFX }}" > duckstation.pfx
+
       - name: Build DuckStation x64
-        run: msbuild duckstation.sln /t:Build /p:Configuration=ReleaseUWP /p:Platform=x64
-
-      - name: Generate self-signed certificate and private key
-        run: |
-          $cert = New-SelfSignedCertificate -CertStoreLocation cert:\LocalMachine\My -DnsName "example.com" -KeyExportPolicy Exportable -KeyLength 2048 -KeyUsage DigitalSignature
-          $certBytes = $cert.Export([System.Security.Cryptography.X509Certificates.X509ContentType]::Pfx)
-          $certFile = "duckstation-uwp_TemporaryKey.pfx"
-          [System.IO.File]::WriteAllBytes($certFile, $certBytes)
-        shell: pwsh
-
-      - name: Store .pfx file as encrypted secret
-        run: |
-          mv duckstation-uwp_TemporaryKey.pfx $GITHUB_WORKSPACE/duckstation-uwp_TemporaryKey.pfx
-        if: success()
+        run: msbuild duckstation.sln /t:Build /p:Configuration=ReleaseUWP /p:Platform=x64   
 
       - name: Sign UWP package
         run: |
-          "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\SignTool.exe" sign /fd SHA256 /f duckstation-uwp_TemporaryKey.pfx /p $PFX_PASSWORD /t http://timestamp.digicert.com/ /v *.appx
+          "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\SignTool.exe" sign /fd SHA256 /f duckstation.pfx /p $PFX_PASSWORD /t http://timestamp.digicert.com/ /v *.appx
 
       - name: Upload UWP package as artifact
         uses: actions/upload-artifact@v2
