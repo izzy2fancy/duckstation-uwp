@@ -15,10 +15,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Print the path of the potential repository directory
-        if: startsWith(runner.os, 'Linux')
-        run: bash print_repo_dir.sh
-      
       - name: Restore NuGet packages
         run: nuget restore duckstation.sln
 
@@ -31,7 +27,7 @@ jobs:
       - name: Update manifest file
         run: |
           $version = "1.0.0.0"  # Update this with your desired version
-          $manifest = "src/duckstation-uwp/Package.appxmanifest"
+          $manifest = "home/runner/work/duckstation-uwp/duckstation-uwp/src/duckstation-uwp/Package.appxmanifest"
           $content = Get-Content $manifest
           $content -replace '(?<=<Identity Name=")([^"]+)(?=" Version="[^"]+")', $version | Set-Content $manifest
         shell: pwsh
@@ -42,12 +38,16 @@ jobs:
           arch: x64                  
           uwp: true
 
+      - name: Use DuckStation PFX
+        run: echo "${{ secrets.DUCKSTATION_PFX }}" > duckstation-uwp_TemporaryKey.pfx
+
       - name: Build DuckStation x64
         run: msbuild duckstation.sln /t:Build /p:Configuration=ReleaseUWP /p:Platform=x64   
 
       - name: Sign UWP package
         run: |
          "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\SignTool.exe" sign /fd SHA256 /f duckstation-uwp_TemporaryKey.pfx /p ${{ secrets.PFX_PASSWORD }} /t http://timestamp.digicert.com/ /v *.appx
+
       - name: Upload UWP package as artifact
         uses: actions/upload-artifact@v2
         with:
