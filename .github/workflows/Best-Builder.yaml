@@ -1,10 +1,7 @@
 name: Build DuckStation UWP
-
 on:
-  push:
-    branches:
-      - main
-
+  workflow_dispatch
+     
 jobs:
   build:
     runs-on: windows-latest
@@ -31,4 +28,3 @@ jobs:
         if: runner.os == 'Windows'
         run: |
           .\build.ps1
-          
