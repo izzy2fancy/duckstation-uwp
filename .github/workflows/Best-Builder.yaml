@@ -25,8 +25,7 @@ jobs:
           uwp: true
 
       - name: Install Visual Studio 2022
-        run: choco visualstudio2022buildtools
-
+        run: choco install visualstudio2022buildtools-preview --pre 
       - name: Install Visual Studio 2022 Workloads
         shell: powershell
         run: ./vs2017.ps1
