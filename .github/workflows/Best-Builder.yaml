@@ -43,13 +43,7 @@ jobs:
          Remove-Item -Path $extractFolder -Recurse -Force
          Remove-Item -Path $zipFile -Force
       
-      - name: Download and extract SDL2
-        run: |
-          wget https://github.com/libsdl-org/SDL/releases/download/release-2.30.1/SDL2-2.30.1-win32-x64.zip
-          unzip SDL2-2.30.1-win32-x64.zip -d dep/msvc/deps-x64/include/SDL2
-          mv dep/msvc/deps-x64/include/SDL2/SDL2-2.30.1-win32-x64/* dep/msvc/deps-x64/include/SDL2/
-          rm -rf dep/msvc/deps-x64/include/SDL2/SDL2-2.30.1-win32-x64
-          
+      
       - name: Update manifest file
         run: |          
           $version = "1.0.0.0"
