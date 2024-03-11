@@ -5,7 +5,7 @@ on:
 
 jobs:
   build:
-    runs-on: windows-2017
+    runs-on: windows-latest
 
     steps:
       - name: Checkout
@@ -24,10 +24,10 @@ jobs:
           arch: x64                  
           uwp: true
 
-      - name: Install Visual Studio 2017
-        run: choco install visualstudio2017buildtools
+      - name: Install Visual Studio 2022
+        run: choco install visualstudio2022buildtools
 
-      - name: Install Visual Studio 2017 Workloads
+      - name: Install Visual Studio 2022 Workloads
         shell: powershell
         run: ./vs2017.ps1
       
@@ -36,7 +36,7 @@ jobs:
         run: |
           choco install -y 
           curl -L -o deps-x64.7z https://github.com/stenzek/duckstation-ext-qt-minimal/releases/download/latest/deps-x64.7z
-          7z x deps-x64.7z -odep/msvc
+          7z x deps-x64.7z -o dep/msvc
           $version = "1.0.0.0"
           $manifest = "src/duckstation-uwp/Package.appxmanifest"
           $content = Get-Content $manifest
