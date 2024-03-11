@@ -47,7 +47,7 @@ Other features include:
 ## System Requirements
  - A CPU faster than a potato. But it needs to be x86_64, AArch32/armv7, AArch64/ARMv8, or RISC-V/RV64.
  - For the hardware renderers, a GPU capable of OpenGL 3.1/OpenGL ES 3.1/Direct3D 11 Feature Level 10.0 (or Vulkan 1.0) and above. So, basically anything made in the last 10 years or so.
- - SDL, XInput or DInput compatible game controller (e.g. XB360/XBOne/XBSeries). DualShock 3 users on Windows will need to install the official DualShock 3 drivers included as part of PlayStation Now.
+ - An XInput compatible game controller (e.g. XB360/XBOne/XBSeries). Users on Windows using other controllers (like the DualShock/DualSense) may need to use a translation layer.
 
 ## Downloading and running
 Binaries of DuckStation for Windows x64/ARM64, Linux x86_64 (in AppImage/Flatpak formats), and macOS Universal Binaries are available via DuckStation's GitHub Releases and are automatically built with every commit/push to their repo.
@@ -75,9 +75,20 @@ To install:
 Contrary to most Xbox homebrew, DuckStation-UWP typically requires the dependencies to run. If you get an error "0x80070002" upon starting the application, you forgot the dependencies. Uninstall and try again.
 
 ### Windows (UWP)
-(TODO: Flesh out this section more, even if it is secondary.)
 
-Enable developer mode and install the appx package with the Windows package installer.
+Enable developer mode, and install the AppX package with the Windows package installer or the `Add-AppxPackage` PowerShell command.
+
+Due to the certificate being self signed, you may not be able to install the package due to not trusting my certificate. Do the following:
+- Right click on the package
+- Go to Properties
+- Go to Digital Signatures
+- Select the signature belonging to "irixaligned" from the list
+- Click Details, then View Certificate
+- Click Install Certificate
+- Select Local Machine as the store location
+- Select "Place all certificates in the following store"
+- Install it to the "Trusted People" certificate store
+- If you are still unable to install the package, do the above, except select "Trusted Root Certification Authorities" as the store. Do note that this is a large security risk and should be done only as a last resort.
 
 ### LibCrypt protection and SBI files
 
@@ -143,3 +154,5 @@ Icon by icons8: https://icons8.com/icon/74847/platforms.undefined.short-title
 Primary work on DuckStation is done by Stenzek. This is just a port of his emulator back to the Xbox and other UWP platforms. You can find his repo here: https://github.com/stenzek/duckstation
 
 "PlayStation" and "PSX" are registered trademarks of Sony Interactive Entertainment Europe Limited. This project is not affiliated in any way with Sony Interactive Entertainment.
+
+If you obtained any specialized version of this emulator (e.g. through Patreon, Retail mode, or a special Discord release), paid for this software in any fashion, or obtained any other sort of publicized release without appropriately matching source code, please contact me immediately in the event this has happened. This software is FREE and is not monetized by me in any fashion.
