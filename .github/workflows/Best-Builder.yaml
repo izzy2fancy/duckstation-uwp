@@ -39,7 +39,7 @@ jobs:
 
          Invoke-WebRequest -Uri $url -OutFile $zipFile
          Expand-Archive -Path $zipFile -DestinationPath $extractFolder
-         Move-Item "$extractFolder\*" "dep\msvc\include\SDL2\"
+         Move-Item "$extractFolder\* dep/msvc/include/SDL2
          Remove-Item -Path $extractFolder -Recurse -Force
          Remove-Item -Path $zipFile -Force
       
