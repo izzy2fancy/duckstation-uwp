@@ -1,0 +1,36 @@
+name: Find SDL.h Path
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  find_sdlh:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Find SDL.h
+        run: |
+          filename="SDL.h"
+          search_path=(
+            "/usr/include"  # Example: for Linux
+            "C:\\Program Files (x86)\\SDL2\\include"  # Example: for Windows
+            # Add more directories as needed
+          )
+          for directory in "${search_path[@]}"; do
+            file_path="$directory/$filename"
+            if [ -f "$file_path" ]; then
+              echo "::set-output name=path::$file_path"
+              exit 0
+            fi
+          done
+          echo "SDL.h not found." >&2
+          exit 1
+
+      - name: Print SDL.h path
+        if: steps.find_sdlh.outputs.path
+        run: echo "Path to SDL.h: ${{ steps.find_sdlh.outputs.path }}"
