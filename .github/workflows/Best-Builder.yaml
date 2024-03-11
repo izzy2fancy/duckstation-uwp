@@ -33,16 +33,15 @@ jobs:
       - name: Download and extract SDL2
         shell: powershell
         run: |
-         $url = "https://github.com/libsdl-org/SDL/releases/download/release-2.30.1/SDL2-2.30.1-win32-x64.zip"
-         $zipFile = "$env:TEMP\SDL2-2.30.1-win32-x64.zip"
-         $extractFolder = "$env:TEMP\SDL2-2.30.1-win32-x64"
-
-         Invoke-WebRequest -Uri $url -OutFile $zipFile
-         Expand-Archive -Path $zipFile -DestinationPath $extractFolder
-         Move-Item $extractFolder\ dep/msvc/include/SDL2
-         Remove-Item -Path $extractFolder -Recurse -Force
-         Remove-Item -Path $zipFile -Force
-      
+          $url = "https://github.com/libsdl-org/SDL/releases/download/release-2.30.1/SDL2-2.30.1-win32-x64.zip"
+          $zipFile = "$env:TEMP\SDL2-2.30.1-win32-x64.zip"
+          $extractFolder = "$env:TEMP\SDL2-2.30.1-win32-x64"
+         
+          Invoke-WebRequest -Uri $url -OutFile $zipFile
+          Expand-Archive -Path $zipFile -DestinationPath $extractFolder
+          Move-Item $extractFolder\* dep/msvc/include/SDL2
+          Remove-Item -Path $extractFolder -Recurse -Force
+          Remove-Item -Path $zipFile -Force
       
       - name: Update manifest file
         run: |          
@@ -69,5 +68,5 @@ jobs:
 
       - name: Cleanup
         run: |
-         Remove-Item "deps-x64.7z" -Force
-         Remove-Item "duckstation-uwp_TemporaryKey.pfx" -Force
+          Remove-Item "deps-x64.7z" -Force
+          Remove-Item "duckstation-uwp_TemporaryKey.pfx" -Force
