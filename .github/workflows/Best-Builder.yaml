@@ -26,28 +26,24 @@ jobs:
 
       - name: Install Visual Studio 2022
         run: choco install visualstudio2022buildtools-preview --pre 
+        
       - name: Install Visual Studio 2022 Workloads
         shell: powershell
         run: ./vs2017.ps1
       
       # Install dependencies and update manifest file
-      - name: Install dependencies and update manifest file
+      - name: Update manifest file
         run: |          
           $version = "1.0.0.0"
           $manifest = "src/duckstation-uwp/Package.appxmanifest"
           $content = Get-Content $manifest
           $content -replace '(?<=<Identity Name=")([^"]+)(?=" Version="[^"]+")', $version | Set-Content $manifest
-        shell: pwsh
+          shell: pwsh
 
       # Use DuckStation PFX
       - name: Use DuckStation PFX
         run: echo "${{ secrets.DUCKSTATION_PFX }}" > duckstation-uwp_TemporaryKey.pfx
-      
-      - name: Run build-dependencies-windows-x64.bat
-        run: |
-         cd scripts
-         call build-dependencies-windows-x64.bat
-
+            
       # Build DuckStation x64
       - name: Build DuckStation x64
         run: msbuild duckstation.sln /t:Build /p:Configuration=ReleaseUWP /p:Platform=x64   
