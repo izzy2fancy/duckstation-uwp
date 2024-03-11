@@ -34,7 +34,7 @@ jobs:
       # Install dependencies and update manifest file
       - name: Install dependencies and update manifest file
         run: |
-          choco install -y visualstudio2019buildtools
+          choco install -y 
           curl -L -o deps-x64.7z https://github.com/stenzek/duckstation-ext-qt-minimal/releases/download/latest/deps-x64.7z
           7z x deps-x64.7z -odep/msvc
           $version = "1.0.0.0"
