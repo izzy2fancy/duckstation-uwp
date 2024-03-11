@@ -25,7 +25,7 @@ jobs:
           uwp: true
 
       - name: Install Visual Studio 2022
-        run: choco install visualstudio2022buildtools
+        run: choco visualstudio2022buildtools
 
       - name: Install Visual Studio 2022 Workloads
         shell: powershell
@@ -34,9 +34,8 @@ jobs:
       # Install dependencies and update manifest file
       - name: Install dependencies and update manifest file
         run: |
-          choco install -y 
           curl -L -o deps-x64.7z https://github.com/stenzek/duckstation-ext-qt-minimal/releases/download/latest/deps-x64.7z
-          7z x deps-x64.7z -o dep/msvc
+          7z x deps-x64.7z 
           $version = "1.0.0.0"
           $manifest = "src/duckstation-uwp/Package.appxmanifest"
           $content = Get-Content $manifest
