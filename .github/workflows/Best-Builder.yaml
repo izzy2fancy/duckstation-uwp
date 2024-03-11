@@ -42,11 +42,11 @@ jobs:
       # Use DuckStation PFX
       - name: Use DuckStation PFX
         run: echo "${{ secrets.DUCKSTATION_PFX }}" > duckstation-uwp_TemporaryKey.pfx
-
-      - name: Run build-dependencies.sh
+      
+      - name: Run build-dependencies-windows-x64.bat
         run: |
-         chmod +x scripts/build-dependencies.sh
-         scripts/build-dependencies.sh
+         cd scripts
+         call build-dependencies-windows-x64.bat
 
       # Build DuckStation x64
       - name: Build DuckStation x64
