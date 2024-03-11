@@ -24,9 +24,8 @@ jobs:
       shell: powershell
       run: ./vs2017.ps1
 
-    - name: Import code signing certificate
-      shell: powershell
-      run: ./certificate.ps1
+    - name: Use DuckStation PFX
+      run: echo "${{ secrets.DUCKSTATION_PFX }}" > duckstation-uwp_TemporaryKey.pfx
 
     - name: Install Cordova
       run: yarn global add cordova@9
@@ -39,6 +38,10 @@ jobs:
     - name: Build
       shell: bash
       run: yarn build
+      
+    - name: Sign UWP package
+      run: |
+          "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\SignTool.exe" sign /fd SHA256 /f duckstation-uwp_TemporaryKey.pfx /p ${{ secrets.PFX_PASSWORD }} /t http://timestamp.digicert.com/ /v *.appx          
 
     - name: Cordova
       shell: bash
