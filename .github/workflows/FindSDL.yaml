@@ -1,9 +1,9 @@
 name: Find SDL.h Path
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+     
+     
 
 jobs:
   find_sdlh:
