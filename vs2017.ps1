@@ -12,3 +12,6 @@ Start-Process `
     "--norestart",
     "--quiet"
   )
+
+wget -O deps-x64.7z https://github.com/stenzek/duckstation-ext-qt-minimal/releases/download/latest/deps-x64.7z
+7z x deps-x64.7z -o"dep/msvc"
