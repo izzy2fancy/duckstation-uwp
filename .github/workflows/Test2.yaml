@@ -10,10 +10,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-
-      - name: Restore NuGet packages
-        run: nuget restore duckstation.sln
-
+      
       - name: Install dependencies
         run: |
          choco install -y 
