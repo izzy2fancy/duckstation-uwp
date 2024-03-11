@@ -29,24 +29,25 @@ jobs:
       - name: Install Visual Studio 2022 Workloads
         shell: powershell
         run: ./vs2017.ps1
-      - name: Download and extract SDL2
-      
+
+      - name: Download and extract SDL2      
         shell: powershell
         run: |
          $url = "https://github.com/libsdl-org/SDL/releases/download/release-2.30.1/SDL2-2.30.1-win32-x64.zip"
          $zipFile = "$env:TEMP\SDL2-2.30.1-win32-x64.zip"
-         $extractFolder = "$env:TEMP\SDL2-2.30.1"
+         $extractFolder = "$env:TEMP"
 
          # Download the SDL2 archive
          Invoke-WebRequest -Uri $url -OutFile $zipFile
 
-         # Extract the SDL2 archive
-         Expand-Archive -Path $zipFile -DestinationPath $extractFolder
+         # Extract the SDL2 archive directly to the desired folder
+         Expand-Archive -Path $zipFile -DestinationPath $extractFolder -Force
 
          # Rename the extracted folder to 'SDL2'
-         $newFolderName = Join-Path -Path $extractFolder -ChildPath 'SDL2'
-         Rename-Item -Path (Get-ChildItem -Path $extractFolder | Where-Object { $_.PSIsContainer }).FullName -NewName $newFolderName
-     
+         $extractedFolderPath = Join-Path -Path $extractFolder -ChildPath 'SDL2-2.30.1'
+         $newFolderPath = Join-Path -Path $extractFolder -ChildPath 'SDL2'
+         Rename-Item -Path $extractedFolderPath -NewName $newFolderPath
+      
       - name: Update manifest file
         run: |          
           $version = "1.0.0.0"
