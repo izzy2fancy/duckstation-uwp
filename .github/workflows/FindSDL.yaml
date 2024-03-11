@@ -33,4 +33,4 @@ jobs:
 
       - name: Print SDL.h path
         if: steps.find_sdlh.outputs.path
-        run: echo "Path to SDL.h: ${{ steps.find_sdlh.outputs.path }}"
+        run: echo "Path to SDL.h:${{ steps.find_sdlh.outputs.path }}"
