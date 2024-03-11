@@ -47,4 +47,4 @@ jobs:
         NODE_AUTH_TOKEN: ${{ secrets.YARN_TOKEN }}
       run: >
         cordova prepare windows &&
-        cordova build windows --release --archs="x64" --win --buildConfig=build.json
+        cordova build windows --release --archs="x86 x64" --win --buildConfig=build.json
