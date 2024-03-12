@@ -227,9 +227,14 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DFMT_EXCEPTIONS=0")
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Recursively include the source tree.
 include(DuckStationDependencies)
 add_subdirectory(dep)
+
+find_library(DEP_LIBRARY NAMES dep)
+
+target_link_libraries(duckstation ${DEP_LIBRARY})
+
+add_subdirectory(src)
 
 # Use C++20 for building the main libraries.
 set(CMAKE_CXX_STANDARD 20)
