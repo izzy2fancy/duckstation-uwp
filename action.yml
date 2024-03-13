@@ -1,0 +1,32 @@
+name: "Dotenv Action"
+description: "Load variables from .env file"
+branding:
+  icon: play
+  color: green
+inputs:
+  path: # id of input
+    description: "the path to the .env file (including file name)"
+    required: true
+    default: ".env"
+  log-variables:
+    description: "whether to log the variables to output or not"
+    required: false
+    default: "false"
+  mask-variables:
+    description: "whether to mask the variables as secrets or not"
+    required: false
+    default: "false"
+  export-variables:
+    description: "whether to export the variables to the environment or not"
+    required: false
+    default: "false"
+  keys-case:
+    description: "Transform keys case to lower, upper or keep as it is with bypass"
+    required: false
+    default: "lower"
+outputs:
+  generic: # output will be available to future steps
+    description: "This command will have generic output variables based on .env"
+runs:
+  using: "node20"
+  main: "dist/index.js"
