@@ -16,10 +16,8 @@ jobs:
 
       - name: Download and Extract 7z Archive
         run: |
-          curl -L -o deps-x64.7z https://github.com/stenzek/duckstation-ext-qt-minimal/releases/download/latest/deps-x64.7z
-          ls -lh
-          7z x deps-x64.7z -odep/msvc/* -r
-          ls -lh dep/msvc
-          rm deps-x64.7z
+         curl -L -o deps-x64.7z https://github.com/stenzek/duckstation-ext-qt-minimal/releases/download/latest/deps-x64.7z
+         7z x deps-x64.7z -odep/msvc -r
+         rm deps-x64.7z
 
-      # Add more steps to check the contents of the extracted directory, if needed
+         # Add more steps to check the contents of the extracted directory, if needed
