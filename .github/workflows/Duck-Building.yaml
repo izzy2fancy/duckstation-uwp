@@ -26,7 +26,6 @@ jobs:
         id: getTag
         uses: dawidd6/action-get-tag@v1.1.0
         with:
-          tag: v1.0.0
           strip_v: true
 
       - name: GetPackageName
