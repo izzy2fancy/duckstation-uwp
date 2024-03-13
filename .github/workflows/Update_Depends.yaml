@@ -18,15 +18,19 @@ jobs:
 
       - name: Extract 7z Archive
         run: |
-         const Seven = require("node-7z");
-         async function extractArchive() {
-         await Seven.extractFull("archive.7z", "temp_extracted");
-         }
+          npm install node-7z
+          node -e 'const Seven = require("node-7z");
+                   async function extractArchive() {
+                     try {
+                       await Seven.extractFull("archive.7z", "temp_extracted");
+                       console.log("Extraction completed successfully");
+                     } catch (error) {
+                       console.error("Error during extraction:", error);
+                       process.exit(1); // Exit with non-zero status code to indicate failure
+                     }
+                   }
+                   extractArchive();'
 
-         extractArchive()
-         .then(() => console.log("Extraction completed successfully"))
-         .catch(error => console.error("Error during extraction:", error));
-          
       - name: List Extracted Files
         run: ls temp_extracted
 
