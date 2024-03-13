@@ -1,16 +1,17 @@
 name: Project Specific Workflow
 
 on:
-  push:
-    branches: [uwp]
-  pull_request:
-    branches: [uwp]
-  workflow_dispatch:
+  workflow_call:
     inputs:
       build-and-verify:
         description: 'Do a build and verify'
         required: true
-        default: 'true'    
+
+jobs:
+  build-and-verify:
+    runs-on: ubuntu-latest
+    steps:
+      # Add your build and verification steps here    
 
 jobs:
   EnvSetup:
