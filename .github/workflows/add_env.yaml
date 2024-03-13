@@ -1,0 +1,29 @@
+name: Example Workflow
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Use dotenv action
+        uses: chdsbd/dotenv-action@v1
+        with:
+          path: .env
+          log-variables: true
+          mask-variables: true
+          export-variables: true
+          keys-case: lower
+
+      # Now you can use the environment variables defined in the .env file in your subsequent steps
+      - name: Display environment variables
+        run: |
+          echo "Version: $VERSION"
+          echo "Author: $AUTHOR"
