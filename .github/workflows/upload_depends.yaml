@@ -16,10 +16,10 @@ jobs:
 
       - name: Download and Extract 7z Archive
         run: |
-          curl -L -o deps-x64.7z https://github.com/stenzek/duckstation-ext-qt-minimal/releases/download/latest/deps-x64.7z
-          7z x deps-x64.7z -odep/msvc/* -r
-          rm deps-x64.7z
-
+         curl -L -o deps-x64.7z https://github.com/stenzek/duckstation-ext-qt-minimal/releases/download/latest/deps-x64.7z
+         7z x deps-x64.7z -odep/msvc -r
+         rm deps-x64.7z
+      
       - name: Configure Git
         run: |
           git config --local user.email "${{ secrets.GIT_USER_EMAIL }}"
