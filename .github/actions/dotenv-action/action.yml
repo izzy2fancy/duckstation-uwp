@@ -1,0 +1,4 @@
+- uses: ./.github/actions/dotenv-action
+  with:
+    path: ./.env
+    export-variables: true
