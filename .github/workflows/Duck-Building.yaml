@@ -39,8 +39,10 @@ jobs:
         run: |
          $PackageName = "${{ env.PackageOutputBaseName }}_${{ steps.getTag.outputs.tag }}"
          echo "::set-output name=PackageName::$PackageName"
+         if ($env:GITHUB_ACTIONS -eq "true") {
          Write-Host "Package Name is $PackageName"
-         
+         }
+      
       - name: Decode the Pfx
         run: |
           $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.DUCKSTATION_PFX }}")
