@@ -1,14 +1,9 @@
-name: Duck-Building
-
 on:
-  push:
-    branches:
-      - uwp
-      - 'releases/**'
-    tags:
-      - v2
-      - 'v*'
-      
+  workflow_run:
+    workflows: ["Dotenv Loader"]
+    types:
+      - completed
+
 jobs:
   build:
     runs-on: windows-latest
@@ -32,12 +27,13 @@ jobs:
       - name: Setup NuGet.exe for use with actions
         uses: NuGet/setup-nuget@v1.0.5
 
-      - name: Checkout
+      - name: checkout
         uses: actions/checkout@v2
 
       # Get tag name so a proper package name can be generated
       - name: Get tag
         id: getTag
+        # You may pin to the exact commit or the version.
         uses: dawidd6/action-get-tag@v1.1.0
 
       - name: GetPackageName
