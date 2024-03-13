@@ -7,19 +7,8 @@ jobs:
   build:
     runs-on: windows-latest
 
-    env:
-      SolutionPath: duckstation.sln
-      Platform: x64
-      Configuration: Release
-      BuildMode: SideLoadOnly
-      AppxBundle: Never
-      SigningCertificate: duckstation-uwp_TemporaryKey.pfx      
-      ProjectPath: duckstation-uwp/src/duckstation-uwp/duckstation-uwp.vcxproj
-      ProjectDirectory: .\duckstation-uwp/src/duckstation-uwp
-      PackageOutputRootDir: C:\AppPackage
-      PackageOutputDir: duckstation-uwp
-      PackageOutputBaseName: duckstation-uwp
-      NUGET_VERSION: 6.9.1
+    environment:
+      name: duckstation_env
 
     steps:
       - name: Add msbuild to PATH
@@ -37,8 +26,8 @@ jobs:
         id: getTag
         uses: dawidd6/action-get-tag@v1.1.0
         with:
-         tag: v1.0.0
-         strip_v: true
+          tag: v1.0.0
+          strip_v: true
 
       - name: GetPackageName
         id: getPackageName
