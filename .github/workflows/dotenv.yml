@@ -13,5 +13,5 @@ jobs:
       - name: Load environment variables
         uses: ./.github/actions/dotenv-action
         with:
-          path: ./.env
+          path: ./
           export-variables: true
