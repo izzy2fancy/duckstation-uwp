@@ -14,9 +14,7 @@ jobs:
       - name: Install dependencies
         run: |
          choco install -y 
-         curl -L -o deps-x64.7z https://github.com/stenzek/duckstation-ext-qt-minimal/releases/download/latest/deps-x64.7z
-         7z x deps-x64.7z -odep/msvc/* -r
-
+         
       - name: Update manifest file
         run: |
           $version = "1.0.0.0"
@@ -32,8 +30,8 @@ jobs:
           uwp: true
 
       - name: Use DuckStation PFX
-        run: echo "${{ secrets.DUCKSTATION_PFX }}" > duckstation-uwp_TemporaryKey.pfx
-
+        run: echo "${{ secrets.SIGNING_CERTIFICATE }}" > duckstation-uwp_TemporaryKey.pfx
+        
       - name: Build DuckStation x64
         run: msbuild duckstation.sln /t:Build /p:Configuration=Release /p:Platform=x64 /p:UapAppxPackageBuildMode=SideLoadOnly /p:AppxBundle=Never 
       - name: Sign UWP package
