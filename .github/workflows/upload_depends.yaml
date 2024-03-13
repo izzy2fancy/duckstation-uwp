@@ -27,8 +27,8 @@ jobs:
 
       - name: Commit Changes
         run: |
-          git add .
-          git diff --quiet && echo "No changes to commit" || git commit -m "Update depends"
+         git add -A
+         git diff --cached --quiet && echo "No changes to commit" || git commit -m "Update depends"
       
       - name: Push Changes
         if: github.event_name == 'push'
