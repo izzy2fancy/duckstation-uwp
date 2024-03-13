@@ -27,7 +27,7 @@ jobs:
 
       - name: Commit Changes
         run: |
-         git add -A
+         git add --all
          git diff --cached --quiet && echo "No changes to commit" || git commit -m "Update depends"
       
       - name: Push Changes
