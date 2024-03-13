@@ -43,13 +43,9 @@ jobs:
          Write-Host "Package Name is $PackageName"
          }
       
-      - name: Decode the Pfx
-        run: |
-          $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.DUCKSTATION_PFX }}")
-          $currentDirectory = Get-Location
-          $certificatePath = Join-Path -Path $currentDirectory -ChildPath $env:ProjectDirectory -AdditionalChildPath $env:SigningCertificate
-          [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
-
+      - name: Use DuckStation PFX
+        run: echo "${{ secrets.DUCKSTATION_PFX }}" > duckstation-uwp_TemporaryKey.pfx
+        
       - name: App build
         run: |
           msbuild $env:SolutionPath 
