@@ -84,4 +84,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: duckstation-package
-          path: "${{ env.PackageOutputRootDir }}\${{steps.getPackageName.outputs.PackageName}}.zip"
+          path: "${{ env.PackageOutputRootDir }}\\${{steps.getPackageName.outputs.PackageName}}.zip"
