@@ -22,8 +22,14 @@ jobs:
 
       - name: Configure Git
         run: |
-          git config --local user.email "${{ secrets.GIT_USER_EMAIL }}"
-          git config --local user.name "${{ secrets.GIT_USER_NAME }}"
+          git config --local user.email "actions@github.com"
+          git config --local user.name "GitHub Actions"
+
+      - name: Check Repository Status
+        run: git status
+
+      - name: List Contents of dep/msvc Directory
+        run: ls dep/msvc
 
       - name: Commit Changes
         run: |
@@ -32,5 +38,9 @@ jobs:
       
       - name: Push Changes
         if: github.event_name == 'push'
-        run: |
-          git push origin ${{ github.ref }}
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Update dependencies
+          commit_user_name: GitHub Actions
+          commit_user_email: actions@github.com
+          github_token: ${{ secrets.MY_GITHUB_TOKEN }}
