@@ -1,0 +1,87 @@
+name: Duck-Building
+
+on:
+  workflow_dispatch:
+      
+jobs:
+  build:
+    runs-on: windows-latest
+
+    env:
+      SolutionPath: duckstation.sln
+      Platform: x64
+      Configuration: Release
+      BuildMode: SideLoadOnly
+      AppxBundle: Never
+      SigningCertificate: duckstation-uwp_TemporaryKey.pfx      
+      ProjectPath: duckstation-uwp/src/duckstation-uwp/duckstation-uwp.vcxproj
+      ProjectDirectory: .\duckstation-uwp/src/duckstation-uwp
+      PackageOutputRootDir: C:\AppPackage
+      PackageOutputDir: duckstation-uwp
+      PackageOutputBaseName: duckstation-uwp
+
+    steps:
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1
+        
+      - name: Setup NuGet.exe for use with actions
+        uses: NuGet/setup-nuget@v1.0.5
+        
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: Get tag
+        id: getTag
+        uses: dawidd6/action-get-tag@v1.1.0
+
+      - name: GetPackageName
+        id: getPackageName
+        run: |
+          PackageName="${{ env.PackageOutputBaseName }}"_"${{ steps.getTag.outputs.tag }}"          
+          echo "::set-output name=PackageName::$PackageName"
+          Write-Host "Package Name is $PackageName"
+
+      - name: Decode the Pfx
+        run: |
+          $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.DUCKSTATION_PFX }}")
+          $currentDirectory = Get-Location
+          $certificatePath = Join-Path -Path $currentDirectory -ChildPath $env:ProjectDirectory -AdditionalChildPath $env:SigningCertificate
+          [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
+
+      - name: App build
+        run: |
+          msbuild $env:SolutionPath 
+          /p:Platform=$env:Platform 
+          /p:Configuration=$env:Configuration 
+          /p:UapAppxPackageBuildMode=$env:BuildMode 
+          /p:AppxBundle=$env:AppxBundle 
+          /p:PackageCertificateKeyFile=$env:SigningCertificate 
+          /p:PackageCertificatePassword=${{ secrets.PFX_PASSWORD }}
+          /p:AppxPackageTestDir="${{ env.PackageOutputRootDir }}\${{ steps.getPackageName.outputs.PackageName }}\"          
+          /restore
+
+      - name: Remove the .pfx
+        run: Remove-Item -path $env:ProjectDirectory/$env:SigningCertificate
+
+      - name: Clean package
+        run: | 
+          $PackagePath = "${{ env.PackageOutputRootDir }}\${{steps.getPackageName.outputs.PackageName}}"
+          Remove-Item -Recurse -path $PackagePath/Add-AppDevPackage.resources
+          Remove-Item -Recurse -path $PackagePath/TelemetryDependencies
+          Remove-Item -Recurse -path $PackagePath/Dependencies/arm
+          Remove-Item -Recurse -path $PackagePath/Dependencies/arm64
+          Remove-Item -Recurse -path $PackagePath/Dependencies/x86
+          Remove-Item -path $PackagePath/Add-AppDevPackage.ps1
+          Remove-Item -Recurse -path $PackagePath/Install.ps1
+          
+      - name: Create archive
+        run: |
+          $PackagePath = "${{ env.PackageOutputRootDir }}\${{steps.getPackageName.outputs.PackageName}}"
+          Compress-Archive -Path $PackagePath\* -DestinationPath "$PackagePath.zip"
+          dir "${{ env.PackageOutputRootDir }}"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: duckstation-package
+          path: "${{ env.PackageOutputRootDir }}\${{steps.getPackageName.outputs.PackageName}}.zip"
