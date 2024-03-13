@@ -10,11 +10,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-      
-      - name: Install dependencies
-        run: |
-         choco install -y 
-         
+                     
       - name: Update manifest file
         run: |
           $version = "1.0.0.0"
