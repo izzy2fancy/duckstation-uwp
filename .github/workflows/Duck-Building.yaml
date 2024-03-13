@@ -37,10 +37,10 @@ jobs:
       - name: GetPackageName
         id: getPackageName
         run: |
-          PackageName="${{ env.PackageOutputBaseName }}"_"${{ steps.getTag.outputs.tag }}"          
-          echo "::set-output name=PackageName::$PackageName"
-          Write-Host "Package Name is $PackageName"
-
+         $PackageName = "${{ env.PackageOutputBaseName }}_${{ steps.getTag.outputs.tag }}"
+         echo "::set-output name=PackageName::$PackageName"
+         Write-Host "Package Name is $PackageName"
+         
       - name: Decode the Pfx
         run: |
           $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.DUCKSTATION_PFX }}")
