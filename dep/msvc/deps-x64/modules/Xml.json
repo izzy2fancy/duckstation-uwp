@@ -1,0 +1,12 @@
+{
+    "name": "Xml",
+    "repository": "qtbase",
+    "version": "6.5.3",
+    "built_with": {
+        "compiler_id": "MSVC",
+        "compiler_target": "",
+        "compiler_version": "19.37.32825.0",
+        "cross_compiled": false,
+        "target_system": "Windows"
+    }
+}
