@@ -30,7 +30,7 @@ jobs:
           uwp: true
 
       - name: Use DuckStation PFX
-        run: echo "${{ secrets.SIGNING_CERTIFICATE }}" > duckstation-uwp_TemporaryKey.pfx
+        run: echo "${{ secrets.SIGNING_CERTIFICATE }}" > duckstation-uwp_TemporaryKey.pfx        
         
       - name: Build DuckStation x64
         run: msbuild duckstation.sln /t:Build /p:Configuration=Release /p:Platform=x64 /p:UapAppxPackageBuildMode=SideLoadOnly /p:AppxBundle=Never 
