@@ -1,0 +1,25 @@
+name: Update duckstation depends
+
+on:
+  push:
+    branches:
+      - uwp
+  workflow_dispatch:
+
+jobs:
+  unzip:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Download and Extract 7z Archive
+        run: |
+          curl -L -o deps-x64.7z https://github.com/stenzek/duckstation-ext-qt-minimal/releases/download/latest/deps-x64.7z
+          ls -lh
+          7z x deps-x64.7z -odep/msvc/* -r
+          ls -lh dep/msvc
+          rm deps-x64.7z
+
+      # Add more steps to check the contents of the extracted directory, if needed
