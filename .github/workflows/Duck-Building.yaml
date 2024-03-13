@@ -16,6 +16,11 @@ jobs:
       name: your_environment_file.env
 
     steps:
+      - name: GitHub Tag Name example
+        run: |
+          echo "Tag name from GITHUB_REF_NAME: $GITHUB_REF_NAME"
+          echo "Tag name from github.ref_name: ${{  github.ref_name }}"
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
@@ -28,23 +33,17 @@ jobs:
         uses: NuGet/setup-nuget@v1.0.5
 
       - name: checkout
-        uses: actions/checkout@v2
-
-      # Get tag name so a proper package name can be generated
-      - name: Get tag
-        id: getTag
-        # You may pin to the exact commit or the version.
-        uses: dawidd6/action-get-tag@v1.1.0
+        uses: actions/checkout@v2      
 
       - name: GetPackageName
         id: getPackageName
         run: |
-         $PackageName = "${{ env.PACKAGE_OUTPUT_BASE_NAME }}_${{ steps.getTag.outputs.tag }}"
-         echo "::set-output name=PackageName::$PackageName"
-         if ($env:GITHUB_ACTIONS -eq "true") {
-         Write-Host "Package Name is $PackageName"
-         }
-      
+          $PackageName = "${{ env.PACKAGE_OUTPUT_BASE_NAME }}_${{ steps.getTag.outputs.tag }}"
+          echo "::set-output name=PackageName::$PackageName"
+          if ($env:GITHUB_ACTIONS -eq "true") {
+            Write-Host "Package Name is $PackageName"
+          }
+
       - name: Use DuckStation PFX
         run: echo "${{ secrets.SIGNING_CERTIFICATE }}" > duckstation-uwp_TemporaryKey.pfx
         
@@ -65,7 +64,7 @@ jobs:
 
       - name: Clean package
         run: | 
-          $PackagePath = "${{ env.PACKAGE_OUTPUT_ROOT_DIR }}\${{steps.getPackageName.outputs.PackageName}}"
+          $PackagePath = "${{ env.PACKAGE_OUTPUT_ROOT_DIR }}\${{ steps.getPackageName.outputs.PackageName}}"
           Remove-Item -Recurse -path $PackagePath/Add-AppDevPackage.resources
           Remove-Item -Recurse -path $PackagePath/TelemetryDependencies
           Remove-Item -Recurse -path $PackagePath/Dependencies/arm
@@ -76,7 +75,7 @@ jobs:
           
       - name: Create archive
         run: |
-          $PackagePath = "${{ env.PACKAGE_OUTPUT_ROOT_DIR }}\${{steps.getPackageName.outputs.PackageName}}"
+          $PackagePath = "${{ env.PACKAGE_OUTPUT_ROOT_DIR }}\${{ steps.getPackageName.outputs.PackageName}}"
           Compress-Archive -Path $PackagePath\* -DestinationPath "$PackagePath.zip"
           dir "${{ env.PACKAGE_OUTPUT_ROOT_DIR }}"
 
