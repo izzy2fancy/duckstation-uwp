@@ -21,3 +21,9 @@ jobs:
 
     - name: Run script
       run: bash add_env_variables.sh  # Execute the bash script
+
+    - name: Install Vercel CLI
+      run: npm install -g vercel
+
+    - name: Deploy to Vercel
+      run: vercel --token ${{ secrets.VERCEL_TOKEN }}
