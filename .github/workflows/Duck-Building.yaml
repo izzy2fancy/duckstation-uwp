@@ -41,7 +41,7 @@ jobs:
 
   invoke-workflow:
     needs: [EnvSetup]
-    uses: .github/workflows/Duck-Building.yaml@uwp
+    uses: ./.github/workflows/Duck-Building.yaml
     with:
       build-and-verify: ${{ needs.EnvSetup.outputs.build-and-verify }}
     secrets:
