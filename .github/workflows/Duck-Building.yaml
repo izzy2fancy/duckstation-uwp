@@ -3,7 +3,7 @@ name: Duck-Building
 on:
   push:
     branches:
-      - main   
+      - uwp  
       - 'releases/**'
     tags:
       - v2
