@@ -13,7 +13,7 @@ jobs:
         node-version: [20.x]
     
     environment:
-      name: your_environment_file.env
+      name: duckstation_env
 
     steps:
       - name: GitHub Tag Name example
