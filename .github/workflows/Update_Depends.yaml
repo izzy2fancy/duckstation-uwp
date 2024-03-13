@@ -1,9 +1,6 @@
 name: Upload Files to GitHub
-
 on:
-  push:
-    branches:
-      - uwp
+   workflow_dispatch
 
 jobs:
   upload_files:
