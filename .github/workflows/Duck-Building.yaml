@@ -1,7 +1,13 @@
 name: Duck-Building
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main   
+      - 'releases/**'
+    tags:
+      - v2
+      - 'v1.*'
       
 jobs:
   build:
