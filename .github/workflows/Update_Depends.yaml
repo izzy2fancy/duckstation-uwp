@@ -22,8 +22,14 @@ jobs:
 
       - name: Configure Git
         run: |
-          git config --local user.email "actions@github.com"
-          git config --local user.name "GitHub Actions"
+          git config --local user.email "${{ secrets.GIT_USER_EMAIL }}"
+          git config --local user.name "${{ secrets.GIT_USER_NAME }}"
+
+      - name: Check Repository Status
+        run: git status
+
+      - name: List Contents of dep/msvc Directory
+        run: ls dep/msvc
 
       - name: Commit Changes
         run: |
@@ -32,7 +38,5 @@ jobs:
       
       - name: Push Changes
         if: github.event_name == 'push'
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
+        run: |
+          git push origin ${{ github.ref }}
