@@ -1,17 +1,10 @@
-name: Project Specific Workflow
+name: Duck-Building Workflow
 
 on:
-  workflow_call:
-    inputs:
-      build-and-verify:
-        description: 'Do a build and verify'
-        required: true
-
-jobs:
-  build-and-verify:
-    runs-on: ubuntu-latest
-    steps:
-      # Add your build and verification steps here    
+  push:
+    branches:
+      - uwp
+  workflow_dispatch:
 
 jobs:
   EnvSetup:
@@ -40,10 +33,39 @@ jobs:
           echo "SIGNING_CERTIFICATE=${{ vars.SIGNING_CERTIFICATE }}" >> $GITHUB_ENV
           echo "SOLUTION_PATH=${{ vars.SOLUTION_PATH }}" >> $GITHUB_ENV
 
-  invoke-workflow:
-    needs: [EnvSetup]
-    uses: ./.github/workflows/Duck-Building.yaml
-    with:
-      build-and-verify: ${{ needs.EnvSetup.outputs.build-and-verify }}
-    secrets:
-      token: "${{ secrets.MY_GITHUB_TOKEN }}"
+  build-and-verify:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        node-version: [20.x]
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: GitHub Tag Name example
+        run: |
+          echo "Tag name from GITHUB_REF_NAME: $GITHUB_REF_NAME"
+          echo "Tag name from github.ref_name: ${{ github.ref_name }}"
+      
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1
+
+      - name: Setup NuGet.exe for use with actions
+        uses: NuGet/setup-nuget@v1.0.5
+
+      - name: GetPackageName
+        id: getPackageName
+        run: |
+          $PackageName = "${{ env.PACKAGE_OUTPUT_BASE_NAME }}_${{ steps.getTag.outputs.tag }}"
+          echo "::set-output name=PackageName::$PackageName"
+          if ($env:GITHUB_ACTIONS -eq "true") {
+            Write-Host "Package Name is $PackageName"
+          }
+
+      - name: Use DuckStation PFX
+        run: echo "${{ secrets.SIGNING_CERTIFICATE }}" > duckstation-uwp_TemporaryKey.pfx
