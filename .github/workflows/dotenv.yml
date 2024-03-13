@@ -1,5 +1,5 @@
 name: "Dotenv Loader"
-description: "Load variables from .env file"
+
 on:
   workflow_dispatch:
 
