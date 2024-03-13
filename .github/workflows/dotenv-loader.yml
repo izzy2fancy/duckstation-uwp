@@ -15,3 +15,8 @@ jobs:
         with:
           path: your_environment_file.env
           export-variables: true
+
+      - name: Trigger Duck-Building Workflow
+        run: |
+          echo "Triggering Duck-Building workflow"
+          curl -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/your_username/your_repository/actions/workflows/duck-building.yml/dispatches -d '{"ref":"uwp"}'
