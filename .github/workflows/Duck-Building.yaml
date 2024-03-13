@@ -7,7 +7,7 @@ on:
       - 'releases/**'
     tags:
       - v2
-      - 'v1.*'
+      - 'v*'
       
 jobs:
   build:
@@ -28,12 +28,11 @@ jobs:
       - name: checkout
         uses: actions/checkout@v2
 
+      # Get tag name so a proper package name can be generated
       - name: Get tag
         id: getTag
+        # You may pin to the exact commit or the version.
         uses: dawidd6/action-get-tag@v1.1.0
-        with:
-         strip_v: false
-         version: v1.0.0
 
       - name: GetPackageName
         id: getPackageName
