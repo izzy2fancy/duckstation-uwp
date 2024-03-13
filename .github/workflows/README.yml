@@ -1,0 +1,17 @@
+name: Load Environment Variables
+
+on:
+  workflow_dispatch:
+
+jobs:
+  load_env:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      
+      - name: Load Environment Variables from .env
+        uses: ./
+        with:
+          path: ./.env
+          export-variables: true
