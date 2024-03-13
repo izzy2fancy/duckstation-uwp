@@ -1,0 +1,17 @@
+name: "Dotenv Loader"
+description: "Load variables from .env file"
+on:
+  workflow_dispatch:
+
+jobs:
+  load-env:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Load environment variables
+        uses: ./.github/actions/dotenv-action
+        with:
+          path: ./.env
+          export-variables: true
