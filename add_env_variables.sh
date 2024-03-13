@@ -7,4 +7,4 @@ while IFS='=' read -r key value; do
     # Call vc env add for each variable
     echo -n "$value" | vc env add "$key" production
   fi
-done < /storage/emulated/0/Download/your_environment_file.env
+done < your_environment_file.env
