@@ -13,18 +13,25 @@ jobs:
   build:
     runs-on: windows-latest
 
+    strategy:
+      matrix:
+        node-version: [20.x]
+    
     environment:
       name: duckstation_env
 
     steps:
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v1
-        
+
       - name: Setup NuGet.exe for use with actions
         uses: NuGet/setup-nuget@v1.0.5
-        with:
-          version: ${{ env.NUGET_VERSION }}
-        
+
       - name: checkout
         uses: actions/checkout@v2
 
