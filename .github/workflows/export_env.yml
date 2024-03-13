@@ -1,31 +1,18 @@
 name: "Dotenv Loader"
-description: "Load variables from .env file"
 on:
   workflow_dispatch:
-inputs:
-  path:
-    description: "The path to the .env file (including file name)"
-    required: true
-    default: "./.env"
-  log-variables:
-    description: "Whether to log the variables to output or not"
-    required: false
-    default: "false"
-  mask-variables:
-    description: "Whether to mask the variables as secrets or not"
-    required: false
-    default: "false"
-  export-variables:
-    description: "Whether to export the variables to the environment or not"
-    required: false
-    default: "true"
-  keys-case:
-    description: "Transform keys case to lower, upper or keep as it is with bypass"
-    required: false
-    default: "lower"
-outputs:
-  generic:
-    description: "This command will have generic output variables based on .env"
-runs:
-  using: "node20"
-  main: "dist/index.js"
+jobs:
+  load_env_variables:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Use Dotenv Loader
+        uses: chdsbd/dotenv-action@v1
+        with:
+          path: ${{ inputs.path }}
+          log-variables: ${{ inputs.log-variables }}
+          mask-variables: ${{ inputs.mask-variables }}
+          export-variables: ${{ inputs.export-variables }}
+          keys-case: ${{ inputs.keys-case }}
