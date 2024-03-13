@@ -19,6 +19,7 @@ jobs:
       PackageOutputRootDir: C:\AppPackage
       PackageOutputDir: duckstation-uwp
       PackageOutputBaseName: duckstation-uwp
+      NUGET_VERSION: 6.9.1
 
     steps:
       - name: Add msbuild to PATH
@@ -26,6 +27,8 @@ jobs:
         
       - name: Setup NuGet.exe for use with actions
         uses: NuGet/setup-nuget@v1.0.5
+        with:
+          version: ${{ env.NUGET_VERSION }}
         
       - name: checkout
         uses: actions/checkout@v2
