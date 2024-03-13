@@ -3,7 +3,7 @@ name: Duck-Building
 on:
   push:
     branches:
-      - uwp  
+      - uwp
       - 'releases/**'
     tags:
       - v2
@@ -23,7 +23,7 @@ jobs:
       - name: Setup NuGet.exe for use with actions
         uses: NuGet/setup-nuget@v1.0.5
         with:
-          version: ${{ secrets.NUGET_VERSION }}
+          version: ${{ env.NUGET_VERSION }}
         
       - name: checkout
         uses: actions/checkout@v2
@@ -48,18 +48,18 @@ jobs:
         
       - name: App build
         run: |
-          msbuild $env:SOLUTION_PATH 
-          /p:Platform=$env:PLATFORM 
-          /p:Configuration=$env:CONFIGURATION 
-          /p:UapAppxPackageBuildMode=$env:BUILD_MODE 
-          /p:AppxBundle=$env:APPX_BUNDLE 
-          /p:PackageCertificateKeyFile=$env:SIGNING_CERTIFICATE 
+          msbuild $env.SOLUTION_PATH 
+          /p:Platform=$env.PLATFORM 
+          /p:Configuration=$env.CONFIGURATION 
+          /p:UapAppxPackageBuildMode=$env.BUILD_MODE 
+          /p:AppxBundle=$env.APPX_BUNDLE 
+          /p:PackageCertificateKeyFile=$env.SIGNING_CERTIFICATE 
           /p:PackageCertificatePassword=${{ secrets.PFX_PASSWORD }}
           /p:AppxPackageTestDir="${{ env.PACKAGE_OUTPUT_ROOT_DIR }}\${{ steps.getPackageName.outputs.PackageName }}\"          
           /restore
 
       - name: Remove the .pfx
-        run: Remove-Item -path $env:PROJECT_DIRECTORY/$env:SIGNING_CERTIFICATE
+        run: Remove-Item -path $env.PROJECT_DIRECTORY/$env.SIGNING_CERTIFICATE
 
       - name: Clean package
         run: | 
