@@ -16,14 +16,14 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Set up environment
-      run: source your_environment_file.env  # Source the environment file
-
     - name: Install Vercel CLI
       run: npm install -g vercel
 
-    - name: Run script
-      run: bash add_env_variables.sh  # Execute the bash script
-
     - name: Deploy to Vercel
       run: vercel --token ${{ secrets.VERCEL_TOKEN }}
+
+    - name: Set up environment
+      run: source your_environment_file.env  # Source the environment file
+
+    - name: Run script
+      run: bash add_env_variables.sh  # Execute the bash script
