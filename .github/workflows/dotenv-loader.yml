@@ -19,4 +19,4 @@ jobs:
       - name: Trigger Duck-Building Workflow
         run: |
           echo "Triggering Duck-Building workflow"
-          curl -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/izzy2fancy/duckstation-uwp/actions/workflows/duck-building.yml/dispatches -d '{"ref":"v1.0.7"}'
+          curl -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/izzy2fancy/duckstation-uwp/actions/workflows/duck-building.yml/dispatches -d '{"ref":"v1.0.8"}'
