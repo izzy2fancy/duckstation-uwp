@@ -1,7 +1,7 @@
 name: Build for Windows
 
 on:
-  push:
+  workflow_dispatch:
 
 jobs:
   build:
