@@ -42,5 +42,4 @@ jobs:
          /p:AppxBundle=$GITHUB_ENV:APPX_BUNDLE `
          /p:PackageCertificateKeyFile=${{ secrets.DUCKSTATION_PFX }} `
          /p:PackageCertificatePassword=${{ secrets.PFX_PASSWORD }} `
-         /p:AppxPackageTestDir="${GITHUB_ENV:PACKAGE_OUTPUT_ROOT_DIR}\${{ steps.get_package_name.outputs.PACKAGE_NAME }}\" `
-         /restore
+         /p:AppxPackageTestDir="${GITHUB_ENV:PACKAGE_OUTPUT_ROOT_DIR}\${{ steps.get_package_name.outputs.PACKAGE_NAME }}\" `         
