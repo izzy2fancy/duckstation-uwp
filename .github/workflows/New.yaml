@@ -39,7 +39,7 @@ jobs:
         run: echo "${{ secrets.DUCKSTATION_PFX }}" > duckstation-uwp_TemporaryKey.pfx
             
       - name: Build DuckStation x64
-        run: msbuild duckstation.sln /t:Build /p:Configuration=ReleaseUWP /p:Platform=x64   
+        run: msbuild duckstation.sln /t:Build /p:Configuration=Release /p:Platform=x64   
 
       - name: Sign UWP package
         run: |
