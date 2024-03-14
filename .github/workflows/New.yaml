@@ -8,7 +8,7 @@ jobs:
     runs-on: windows-latest
 
     steps:
-     - name: Checkout
+      - name: Checkout
         uses: actions/checkout@v2
         with:
           ref: uwp
@@ -50,6 +50,7 @@ jobs:
       - name: Sign UWP package
         run: |
           "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\SignTool.exe" sign /fd SHA256 /f duckstation-uwp_TemporaryKey.pfx /p ${{ secrets.PFX_PASSWORD }} /t http://timestamp.digicert.com/ /v *.appx
+      
       - name: Upload UWP package as artifact
         uses: actions/upload-artifact@v2
         with:
@@ -57,5 +58,5 @@ jobs:
 
       - name: Cleanup
         run: |
-         Remove-Item "deps-x64.7z" -Force
-         Remove-Item "duckstation-uwp_TemporaryKey.pfx" -Force
+          Remove-Item "deps-x64.7z" -Force
+          Remove-Item "duckstation-uwp_TemporaryKey.pfx" -Force
