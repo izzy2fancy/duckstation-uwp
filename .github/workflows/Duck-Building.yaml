@@ -1,9 +1,6 @@
 name: Duck-Building Workflow
 
-on:
-  push:
-    branches:
-      - uwp
+on:  
   workflow_dispatch:
 
 jobs:
