@@ -28,18 +28,19 @@ jobs:
           msbuild-architecture: x64
         
       - name: Setup NuGet.exe for use with actions
-        uses: NuGet/setup-nuget@v2.0.0     
+        uses: NuGet/setup-nuget@v1.0.5     
 
       - name: Checkout
         uses: actions/checkout@v4.1.1
 
       - name: App Build
         run: |
-         msbuild $GITHUB_ENV:PROJECT_PATH `
-         /p:Platform=$GITHUB_ENV:PLATFORM `
-         /p:Configuration=$GITHUB_ENV:CONFIGURATION `
-         /p:UapAppxPackageBuildMode=$GITHUB_ENV:BUILD_MODE `
-         /p:AppxBundle=$GITHUB_ENV:APPX_BUNDLE `
-         /p:PackageCertificateKeyFile=${{ secrets.DUCKSTATION_PFX }} `
-         /p:PackageCertificatePassword=${{ secrets.PFX_PASSWORD }} `
-         /p:AppxPackageTestDir="${GITHUB_ENV:PACKAGE_OUTPUT_ROOT_DIR}\${{ steps.get_package_name.outputs.PACKAGE_NAME }}\" `         
+         msbuild $GITHUB_ENV:PROJECT_PATH 
+         /p:Platform=$GITHUB_ENV:PLATFORM 
+         /p:Configuration=$GITHUB_ENV:CONFIGURATION 
+         /p:UapAppxPackageBuildMode=$GITHUB_ENV:BUILD_MODE 
+         /p:AppxBundle=$GITHUB_ENV:APPX_BUNDLE 
+         /p:PackageCertificateKeyFile=${{ secrets.DUCKSTATION_PFX }} 
+         /p:PackageCertificatePassword=${{ secrets.PFX_PASSWORD }} 
+         /p:AppxPackageTestDir="${GITHUB_ENV:PACKAGE_OUTPUT_ROOT_DIR}\${{ steps.get_package_name.outputs.PACKAGE_NAME }}\" 
+         /restore
