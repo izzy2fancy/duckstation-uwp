@@ -23,8 +23,7 @@ jobs:
       - name: Setup MSVC Development Environment
         uses: TheMrMilchmann/setup-msvc-dev@v3.0.0
         with:
-          arch: x64      
-          sdk: 10.0.22621      
+          arch: x64                      
           uwp: true
                                        
       - name: Use DuckStation PFX
