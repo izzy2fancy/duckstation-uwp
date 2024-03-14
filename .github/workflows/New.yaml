@@ -24,22 +24,14 @@ jobs:
         uses: TheMrMilchmann/setup-msvc-dev@v3.0.0
         with:
           arch: x64      
-          sdk: 10.0.10240.0         
+          sdk: (10.0.22621)         
           uwp: true
-                                     
-      - name: Update manifest file
-        run: |          
-          $version = "1.0.0.0"
-          $manifest = "src/duckstation-uwp/Package.appxmanifest"
-          $content = Get-Content $manifest
-          $content -replace '(?<=<Identity Name=")([^"]+)(?=" Version="[^"]+")', $version | Set-Content $manifest
-        shell: pwsh
-
+                                       
       - name: Use DuckStation PFX
         run: echo "${{ secrets.DUCKSTATION_PFX }}" > duckstation-uwp_TemporaryKey.pfx
             
       - name: Build DuckStation x64
-        run: msbuild duckstation.sln /t:Build /p:Configuration=Release /p:Platform=x64   
+        run: msbuild duckstation.sln /t:Build /p:Configuration=ReleaseUWP /p:Platform=x64   
 
       - name: Sign UWP package
         run: |
@@ -51,6 +43,5 @@ jobs:
           name: DuckStation-UWP
 
       - name: Cleanup
-        run: |
-          Remove-Item "deps-x64.7z" -Force
+        run: |          
           Remove-Item "duckstation-uwp_TemporaryKey.pfx" -Force
