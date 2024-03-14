@@ -1,9 +1,8 @@
 name: Duck-Building Workflow
 
 on:
-  workflow_dispatch:
-   branches:
-    - uwp
+  workflow_dispatch
+  
 
 jobs:
   Build:
@@ -46,12 +45,13 @@ jobs:
          Write-Host "Package Name is $PACKAGE_NAME"
     
       - name: App Build
-        run: msbuild $GITHUB_ENV:PROJECT_PATH 
-        /p:Platform=$GITHUB_ENV:PLATFORM 
-        /p:Configuration=$GITHUB_ENV:CONFIGURATION 
-        /p:UapAppxPackageBuildMode=$GITHUB_ENV:BUILD_MODE 
-        /p:AppxBundle=$GITHUB_ENV:APPX_BUNDLE 
-        /p:PackageCertificateKeyFile=${{ secrets.DUCKSTATION_PFX }} 
-        /p:PackageCertificatePassword=${{ secrets.PFX_PASSWORD }}
-        /p:AppxPackageTestDir="${GITHUB_ENV:PACKAGE_OUTPUT_ROOT_DIR}\${GITHUB_ENV:PACKAGE_OUTPUT_BASE_NAME}\"          
-        /restore
+        run: |
+         msbuild ${{ vars.PROJECT_PATH }}
+         /p:Platform=${{ vars.PLATFORM }}
+         /p:Configuration=${{ vars.CONFIGURATION }}
+         /p:UapAppxPackageBuildMode=${{ vars.BUILD_MODE }}
+         /p:AppxBundle=${{ vars.APPX_BUNDLE }}
+         /p:PackageCertificateKeyFile=${{ secrets.DUCKSTATION_PFX }}
+         /p:PackageCertificatePassword=${{ secrets.PFX_PASSWORD }}
+         /p:AppxPackageTestDir="${{ vars.PACKAGE_OUTPUT_ROOT_DIR }}\${{ vars.PACKAGE_OUTPUT_BASE_NAME }}"
+         /restore
