@@ -26,12 +26,7 @@ jobs:
           arch: x64      
           sdk: 10.0.22621.0            
           uwp: true
-          
-        
-      - name: Install Visual Studio 2022 Workloads
-        shell: powershell
-        run: ./vs2017.ps1        
-      
+                                     
       - name: Update manifest file
         run: |          
           $version = "1.0.0.0"
