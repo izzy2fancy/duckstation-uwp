@@ -32,8 +32,6 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v4.1.1
-        with:
-          fetch-depth: 0  
 
       - name: Get Package Name
         id: get_package_name
