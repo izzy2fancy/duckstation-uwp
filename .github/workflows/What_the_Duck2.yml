@@ -38,10 +38,10 @@ jobs:
       - name: Get Package Name
         id: get_package_name
         run: |
-          TAG_VERSION="v1.0.0" 
-          PACKAGE_NAME="${{ vars.PACKAGE_OUTPUT_BASE_NAME }}_${TAG_VERSION}"
-          echo "::set-output name=PACKAGE_NAME::$PACKAGE_NAME"
-          Write-Host "Package Name is $PACKAGE_NAME"
+         $env:TAG_VERSION="v1.0.0"
+         $PACKAGE_NAME="${{ vars.PACKAGE_OUTPUT_BASE_NAME }}_$env:TAG_VERSION"
+         echo "::set-output name=PACKAGE_NAME::$PACKAGE_NAME"
+         Write-Host "Package Name is $PACKAGE_NAME"
     
       - name: App Build
         run: |
