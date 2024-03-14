@@ -2,7 +2,6 @@ name: Duck-Building Workflow
 
 on:
   workflow_dispatch:
-  
 
 jobs:
   Build:
@@ -39,19 +38,19 @@ jobs:
       - name: Get Package Name
         id: get_package_name
         run: |
-         TAG_VERSION="v1.0.0" 
-         PACKAGE_NAME="${{ vars.PACKAGE_OUTPUT_BASE_NAME }}_${TAG_VERSION}"
-         echo "::set-output name=PACKAGE_NAME::$PACKAGE_NAME"
-         Write-Host "Package Name is $PACKAGE_NAME"
+          TAG_VERSION="v1.0.0" 
+          PACKAGE_NAME="${{ vars.PACKAGE_OUTPUT_BASE_NAME }}_${TAG_VERSION}"
+          echo "::set-output name=PACKAGE_NAME::$PACKAGE_NAME"
+          Write-Host "Package Name is $PACKAGE_NAME"
     
       - name: App Build
         run: |
-         msbuild ${{ vars.PROJECT_PATH }}
-         /p:Platform=${{ vars.PLATFORM }}
-         /p:Configuration=${{ vars.CONFIGURATION }}
-         /p:UapAppxPackageBuildMode=${{ vars.BUILD_MODE }}
-         /p:AppxBundle=${{ vars.APPX_BUNDLE }}
-         /p:PackageCertificateKeyFile=${{ secrets.DUCKSTATION_PFX }}
-         /p:PackageCertificatePassword=${{ secrets.PFX_PASSWORD }}
-         /p:AppxPackageTestDir="${{ vars.PACKAGE_OUTPUT_ROOT_DIR }}\${{ vars.PACKAGE_OUTPUT_BASE_NAME }}"
-         /restore
+          msbuild ${{ vars.PROJECT_PATH }}
+          /p:Platform=${{ vars.PLATFORM }}
+          /p:Configuration=${{ vars.CONFIGURATION }}
+          /p:UapAppxPackageBuildMode=${{ vars.BUILD_MODE }}
+          /p:AppxBundle=${{ vars.APPX_BUNDLE }}
+          /p:PackageCertificateKeyFile=${{ secrets.DUCKSTATION_PFX }}
+          /p:PackageCertificatePassword=${{ secrets.PFX_PASSWORD }}
+          /p:AppxPackageTestDir="${{ vars.PACKAGE_OUTPUT_ROOT_DIR }}\${{ vars.PACKAGE_OUTPUT_BASE_NAME }}"
+          /restore
