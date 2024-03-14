@@ -1,0 +1,81 @@
+name: Ducking Build
+
+on:  
+  workflow_dispatch:
+
+jobs:
+  EnvSetup:
+    name: Setup Dynamic Environment Variables
+    runs-on: windows-latest
+    outputs:
+      build-and-verify: ${{ steps.set-output-defaults.outputs.build-and-verify }}
+    steps:
+      - name: Set outputs with default values
+        id: set-output-defaults
+        run: |    
+          echo "::set-output name=build-and-verify::${{ github.event.inputs.build-and-verify || 'true' }}"
+      
+      - name: Load environment variables
+        run: |
+          echo "APPX_BUNDLE=${{ vars.APPX_BUNDLE }}" >> $GITHUB_ENV
+          echo "BUILD_MODE=${{ vars.BUILD_MODE }}" >> $GITHUB_ENV
+          echo "CONFIGURATION=${{ vars.CONFIGURATION }}" >> $GITHUB_ENV
+          echo "NUGET_VERSION=${{ vars.NUGET_VERSION }}" >> $GITHUB_ENV
+          echo "PACKAGE_OUTPUT_BASE_NAME=${{ vars.PACKAGE_OUTPUT_BASE_NAME }}" >> $GITHUB_ENV
+          echo "PACKAGE_OUTPUT_DIR=${{ vars.PACKAGE_OUTPUT_DIR }}" >> $GITHUB_ENV
+          echo "PACKAGE_OUTPUT_ROOT_DIR=${{ vars.PACKAGE_OUTPUT_ROOT_DIR }}" >> $GITHUB_ENV
+          echo "PLATFORM=${{ vars.PLATFORM }}" >> $GITHUB_ENV
+          echo "PROJECT_DIRECTORY=${{ vars.PROJECT_DIRECTORY }}" >> $GITHUB_ENV
+          echo "PROJECT_PATH=${{ vars.PROJECT_PATH }}" >> $GITHUB_ENV
+          echo "SIGNING_CERTIFICATE=${{ vars.SIGNING_CERTIFICATE }}" >> $GITHUB_ENV
+          echo "SOLUTION_PATH=${{ vars.SOLUTION_PATH }}" >> $GITHUB_ENV
+
+  build-and-verify:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        node-version: [20.x]
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: GitHub Tag Name example
+        run: |
+          echo "Tag name from GITHUB_REF_NAME: $GITHUB_REF_NAME"
+          echo "Tag name from github.ref_name: ${{ github.ref_name }}"
+      
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1
+
+      - name: Setup NuGet.exe for use with actions
+        uses: NuGet/setup-nuget@v1.0.5
+
+      - name: GetPackageName
+        id: getPackageName
+        run: |
+          $PackageName = "${{ env.PACKAGE_OUTPUT_BASE_NAME }}_${{ steps.getTag.outputs.tag }}"
+          echo "::set-output name=PackageName::$PackageName"
+          if ($env:GITHUB_ACTIONS -eq "true") {
+            Write-Host "Package Name is $PackageName"
+          }
+
+      - name: Use DuckStation PFX
+        run: echo "${{ secrets.SIGNING_CERTIFICATE }}" > duckstation-uwp_TemporaryKey.pfx
+        
+      - name: App Build
+        run: |
+         msbuild $GITHUB_ENV:PROJECT_PATH 
+         /p:Platform=$GITHUB_ENV:PLATFORM 
+         /p:Configuration=$GITHUB_ENV:CONFIGURATION 
+         /p:UapAppxPackageBuildMode=$GITHUB_ENV:BUILD_MODE 
+         /p:AppxBundle=$GITHUB_ENV:APPX_BUNDLE 
+         /p:PackageCertificateKeyFile=${{ secrets.DUCKSTATION_PFX }} 
+         /p:PackageCertificatePassword=${{ secrets.PFX_PASSWORD }} 
+         /p:AppxPackageTestDir="${GITHUB_ENV:PACKAGE_OUTPUT_ROOT_DIR}\${{ steps.get_package_name.outputs.PACKAGE_NAME }}\" 
+         /restore
+        
