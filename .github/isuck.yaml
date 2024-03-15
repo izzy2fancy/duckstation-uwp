@@ -1,0 +1,43 @@
+name: iSuck
+
+on:
+  push:
+
+jobs:
+  build:
+    runs-on: windows-2019
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: uwp
+          submodules: recursive
+   
+      - name: Setup NuGet.exe for use with actions
+        uses: NuGet/setup-nuget@v1.0.5
+        
+      - name: Setup MSVC Development Environment
+        uses: TheMrMilchmann/setup-msvc-dev@v3.0.0
+        with:
+          arch: x64
+          uwp: true
+
+      - name: Use DuckStation PFX
+        run: echo "${{ secrets.DUCKSTATION_PFX }}" > duckstation-uwp_TemporaryKey.pfx
+            
+      - name: Build DuckStation x64
+        run: msbuild duckstation.sln /t:Build /p:Configuration=ReleaseUWP /p:Platform=x64 /restore
+
+      - name: Sign UWP package
+        run: |
+          "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\SignTool.exe" sign /fd SHA256 /f duckstation-uwp_TemporaryKey.pfx /p ${{ secrets.PFX_PASSWORD }} /t http://timestamp.digicert.com/ /v *.appx
+      
+      - name: Upload UWP package as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: DuckStation-UWP
+
+      - name: Cleanup
+        run: |          
+          Remove-Item "duckstation-uwp_TemporaryKey.pfx" -Force
