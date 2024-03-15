@@ -15,7 +15,7 @@ jobs:
           submodules: recursive
 
       - name: Install Node.js 12
-        uses: actions/setup-node@master
+        uses: actions/setup-node@v2
         with:
           node-version: '12.x'
           registry-url: 'https://npm.pkg.github.com'
@@ -23,9 +23,12 @@ jobs:
       - name: Setup MSVC Development Environment
         uses: TheMrMilchmann/setup-msvc-dev@v3.0.0
         with:
-          arch: x64                      
+          arch: x64
           uwp: true
-                                       
+
+      - name: Run Build Dependencies Script
+        run: scripts/build-dependencies-windows-x64.bat
+
       - name: Use DuckStation PFX
         run: echo "${{ secrets.DUCKSTATION_PFX }}" > duckstation-uwp_TemporaryKey.pfx
             
