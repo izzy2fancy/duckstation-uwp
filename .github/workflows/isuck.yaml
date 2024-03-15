@@ -5,7 +5,7 @@ on:
 
 jobs:
   build:
-    runs-on: windows-2019
+    runs-on: windows-latest 
 
     steps:
       - name: Checkout
@@ -20,7 +20,6 @@ jobs:
       - name: Setup MSVC Development Environment
         uses: TheMrMilchmann/setup-msvc-dev@v3.0.0
         with:
-          arch: x64
           uwp: true
 
       - name: Use DuckStation PFX
