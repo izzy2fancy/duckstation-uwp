@@ -26,8 +26,15 @@ jobs:
       - name: Use DuckStation PFX
         run: echo "${{ secrets.DUCKSTATION_PFX }}" > duckstation-uwp_TemporaryKey.pfx
             
-      - name: Build DuckStation x64
-        run: msbuild duckstation.sln /t:Build /p:Configuration=ReleaseUWP /p:Platform=x64 /restore
+      - name: App build
+        run: msbuild duckstation.sln 
+          /t:Rebuild
+          /p:Platform=x64
+          /p:Configuration=ReleaseUWP 
+          /p:UapAppxPackageBuildMode=SideLoadOnly
+          /p:AppxBundle=Never
+          /p:AppxPackageTestDir=C:\AppPackage    
+          /restore
 
       - name: Sign UWP package
         run: |
