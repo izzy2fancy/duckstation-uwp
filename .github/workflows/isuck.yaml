@@ -18,8 +18,10 @@ jobs:
         uses: NuGet/setup-nuget@v1.0.5
         
       - name: Setup MSVC Development Environment
-        uses: TheMrMilchmann/setup-msvc-dev@v3.0.0
-
+        uses: TheMrMilchmann/setup-msvc-dev@v3
+        with:
+         arch: x64
+         
       - name: Use DuckStation PFX
         run: echo "${{ secrets.DUCKSTATION_PFX }}" > duckstation-uwp_TemporaryKey.pfx
             
