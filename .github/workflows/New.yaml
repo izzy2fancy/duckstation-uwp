@@ -22,30 +22,12 @@ jobs:
 
       - name: Setup NuGet.exe for use with actions
         uses: NuGet/setup-nuget@v1.0.5
-
-      - name: Install Chocolatey
-        if: runner.os == 'Windows'
-        run: |
-          Set-ExecutionPolicy Bypass -Scope Process -Force
-          iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
-
-      - name: Install Visual Studio 2022
-        if: runner.os == 'Windows'
-        run: choco install visualstudio2022buildtools -y
-
-      - name: Install 7-Zip
-        if: runner.os == 'Windows'
-        run: choco install 7zip -y
-
-      - name: Run build script
-        if: runner.os == 'Windows'
-        run: |
-          .\build.ps1
-        
+       
       - name: Setup MSVC Development Environment
         uses: TheMrMilchmann/setup-msvc-dev@v3.0.0
         with:
           arch: x64
+          toolset: v142
           uwp: true
 
       - name: Use DuckStation PFX
