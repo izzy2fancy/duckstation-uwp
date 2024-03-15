@@ -390,7 +390,7 @@
     <Link>
       <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
       <AdditionalDependencies>$(RootBuildDir)common\common.lib;$(RootBuildDir)core\core.lib;$(RootBuildDir)util\util.lib;$(RootBuildDir)d3d12ma\d3d12ma.lib;$(RootBuildDir)fmt\fmt.lib;$(RootBuildDir)imgui\imgui.lib;$(RootBuildDir)libchdr\libchdr.lib;$(RootBuildDir)lzma\lzma.lib;$(RootBuildDir)rcheevos\rcheevos.lib;$(RootBuildDir)reshadefx\reshadefx.lib;$(RootBuildDir)scmversion\scmversion.lib;$(RootBuildDir)soundtouch\soundtouch.lib;$(RootBuildDir)libpng\libpng.lib;$(RootBuildDir)libjpeg\libjpeg.lib;$(RootBuildDir)xxhash\xxhash.lib;$(RootBuildDir)zlib\zlib.lib;$(RootBuildDir)zstd\zstd.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories); $(RootBuildDir); $(VCInstallDir)\lib\store\amd64; $(VCInstallDir)\lib\amd64</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(RootBuildDir);$(RootBuildDir)dep\msvc\deps-x64;%(AdditionalLibraryDirectories); $(VCInstallDir)\lib\store\amd64; $(VCInstallDir)\lib\amd64</AdditionalLibraryDirectories>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -399,20 +399,7 @@
             EXIT 0
       </Command>
     </PreBuildEvent>
-    <ClCompile>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile>$(IntDir)pch.pch</PrecompiledHeaderOutputFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(IntermediateOutputPath);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
-      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <LanguageStandard>stdcpp20</LanguageStandard>
-      <CompileAsWinRT>false</CompileAsWinRT>
-    </ClCompile>
-    <ProjectReference>
-      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
-      <LinkLibraryDependencies>true</LinkLibraryDependencies>
-    </ProjectReference>
-  </ItemDefinitionGroup>
+</ItemDefinitionGroup>
   <ItemGroup>
     <Image Include="Assets\LockScreenLogo.scale-200.png" />
     <Image Include="Assets\SplashScreen.scale-100.png">
