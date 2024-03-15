@@ -20,6 +20,9 @@ jobs:
           node-version: '12.x'
           registry-url: 'https://npm.pkg.github.com'
 
+      - name: Setup NuGet.exe for use with actions
+        uses: NuGet/setup-nuget@v1.0.5
+        
       - name: Setup MSVC Development Environment
         uses: TheMrMilchmann/setup-msvc-dev@v3.0.0
         with:
@@ -30,7 +33,7 @@ jobs:
         run: echo "${{ secrets.DUCKSTATION_PFX }}" > duckstation-uwp_TemporaryKey.pfx
             
       - name: Build DuckStation x64
-        run: msbuild duckstation.sln /t:Build /p:Configuration=ReleaseUWP /p:Platform=x64   
+        run: msbuild duckstation.sln /t:Build /p:Configuration=ReleaseUWP /p:Platform=x64 /restore
 
       - name: Sign UWP package
         run: |
