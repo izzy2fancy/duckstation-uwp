@@ -1,0 +1,63 @@
+name: Build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-2022
+    steps:
+      - name: Clone DuckStation UWP repository
+        uses: actions/checkout@v2
+        with:
+          repository: irixaligned/duckstation-uwp
+          ref: uwp
+          path: ""
+      
+      - name: Cache Dependencies
+        id: cache-deps
+        uses: actions/cache@v3.3.2
+        with:
+          path: |
+            dep/msvc/deps-x64
+          key: deps ${{ hashFiles('scripts/build-dependencies-windows-x64.bat') }}
+      
+      - name: Build Duckstation Xbox Dependencies
+        if: steps.cache-deps.outputs.cache-hit != 'true'
+        env:
+          DEBUG: 0
+        run: scripts/build-dependencies-windows-x64.bat
+      
+      - name: Compile Duckstation Xbox release build
+        shell: cmd
+        run: |
+          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x64
+          msbuild duckstation.sln -t:Build -p:Platform=x64;Configuration=ReleaseUWP
+      
+      - name: Create Duckstation Xbox symbols archive
+        shell: cmd
+        run: |
+          "C:\Program Files\7-Zip\7z.exe" a -r xbox-uwp-release-symbols.zip ./bin/x64/*.pdb
+      
+      - name: Upload Duckstation Xbox release symbols artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: "xbox-uwp"
+          path: "xbox-uwp-release-symbols.zip"
+      
+      - name: Remove extra bloat before archiving
+        shell: cmd
+        run: |
+          del /Q bin\x64\*.pdb bin\x64\*.exp bin\x64\*.lib bin\x64\*.iobj bin\x64\*.ipdb bin\x64\common-tests*
+          rename bin\x64\updater-x64-ReleaseLTCG.exe updater.exe
+      
+      - name: Create Duckstation Xbox release archive
+        shell: cmd
+        run: |
+          "C:\Program Files\7-Zip\7z.exe" a -r xbox-uwp-release.zip ./bin/x64/*
+      
+      - name: Upload Duckstation Xbox release artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: "xbox-uwp"
+          path: "xbox-uwp-release.zip"
