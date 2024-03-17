@@ -13,6 +13,12 @@ jobs:
           repository: SirMangler/xenia
           ref: canary_experimental
           path: ""
+
+      - name: Setup MSVC Development Environment
+        uses: TheMrMilchmann/setup-msvc-dev@v3.0.0
+        with:
+          arch: x64
+          uwp: true
           
       - name: Build Xenia
         run: msbuild xenia-canary-uwp/xenia-canary-uwp.vcxproj /t:Build /p:Configuration=Release /p:Platform=x64 /p:UapAppxPackageBuildMode=SideLoadOnly /p:AppxBundle=Never 
