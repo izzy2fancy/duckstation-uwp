@@ -1,0 +1,29 @@
+name: Build Xbox Xenia
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-2022
+    steps:
+      - name: Clone Xenia UWP repository
+        uses: actions/checkout@v2
+        with:
+          repository: SirMangler/xenia
+          ref: canary_experimental
+          path: ""
+          
+      - name: Build Xenia
+        run: msbuild xenia-canary-uwp/xenia-canary-uwp.vcxproj /t:Build /p:Configuration=Release /p:Platform=x64 /p:UapAppxPackageBuildMode=SideLoadOnly /p:AppxBundle=Never 
+  
+      - name: Create Xenia Xbox release archive
+        shell: cmd
+        run: |
+          "C:\Program Files\7-Zip\7z.exe" a -r xbox-uwp-release.zip ./bin/x64/*
+      
+      - name: Upload Xenia Xbox release artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: "xbox-uwp"
+          path: "xbox-uwp-release.zip"
