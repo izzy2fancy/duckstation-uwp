@@ -11,6 +11,9 @@ jobs:
         run: |
           choco install git -y
           
+      - name: setup-msbuild
+        uses: microsoft/setup-msbuild@v2
+             
       - name: Clone Xenia UWP repository
         run: git clone --branch canary_experimental --depth 1 https://github.com/SirMangler/xenia.git
           
