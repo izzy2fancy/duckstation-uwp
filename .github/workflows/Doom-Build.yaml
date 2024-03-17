@@ -15,15 +15,13 @@ jobs:
 
     - name: Clone dhewm3 repository
       run: git clone https://github.com/dhewm/dhewm3.git
-
-    - name: Change to dhewm3 directory
-      run: cd dhewm3
+      # Change to dhewm3 directory
+      working-directory: dhewm3
 
     - name: Create build directory
       run: mkdir build
-
-    - name: Change to build directory
-      run: cd build
+      # Change to build directory
+      working-directory: dhewm3/build
 
     - name: Configure with CMake
       run: cmake ..
