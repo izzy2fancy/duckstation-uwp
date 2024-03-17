@@ -9,7 +9,7 @@ jobs:
     steps:
       - name: Install Git
         run: |
-          choco install git -y
+          choco install git visualstudio2022buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.MSBuildTools;includeRecommended --add Microsoft.VisualStudio.Workload.VCTools;includeRecommended --quiet" -y          
           
       - name: setup-msbuild
         uses: microsoft/setup-msbuild@v2
