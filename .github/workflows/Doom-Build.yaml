@@ -20,7 +20,7 @@ jobs:
       run: |
         mkdir dhewm3/build
         cd dhewm3/build
-        cmake ..
+        cmake ./
 
     - name: Compile dhewm3
       run: |
