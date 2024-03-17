@@ -49,7 +49,7 @@ jobs:
        [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
     
     - name: Create the app package
-      run: msbuild $env:UWP_Project_Path /p:Configuration=Release /p:UapAppxPackageBuildMode=SideloadOnly /p:AppxBundle=Never /p:PackageCertificateKeyFile=GitHubActionsWorkflow.pfx /p:PackageCertificatePassword=${{ secrets.PFX_PASSWORD }}   
+      run: msbuild $env:UWP_Project_Path /p:Configuration=ReleaseUWP /p:UapAppxPackageBuildMode=SideloadOnly /p:AppxBundle=Never /p:PackageCertificateKeyFile=GitHubActionsWorkflow.pfx /p:PackageCertificatePassword=${{ secrets.PFX_PASSWORD }}   
 
     - name: Remove the pfx
       run: Remove-Item -Path "./GitHubActionsWorkflow.pfx"
