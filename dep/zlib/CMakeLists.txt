@@ -1,4 +1,4 @@
-add_library(zlib
+add_library(dep/zlib
   include/zconf.h
   include/zlib.h
   src/adler32.c
