@@ -18,7 +18,7 @@ jobs:
         run: git clone --branch canary_experimental --depth 1 https://github.com/SirMangler/xenia.git
           
       - name: Build Xenia
-        run: msbuild xenia/xenia-canary-uwp/xenia-canary-uwp.vcxproj /t:Build /p:Configuration=Release /p:Platform=x64 /p:UapAppxPackageBuildMode=SideLoadOnly /p:AppxBundle=Never 
+        run: msbuild xenia/xenia-canary-uwp/xenia-canary-uwp.vcxproj /t:Build /p:Configuration=Release /p:Platform=x64 /p:UapAppxPackageBuildMode=SideLoadOnly /p:AppxBundle=Never /restore
   
       - name: Create Xenia Xbox release archive
         shell: cmd
