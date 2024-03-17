@@ -1,17 +1,20 @@
-name: Your Workflow
+name: Clone and Run Script
 
-on: 
-  workflow_dispatch
-
+on:
+  workflow_dispatch:
+  
 jobs:
-  your_job:
+  build:
     runs-on: ubuntu-latest
+
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
-
-    - name: Run YAML to Github Output Action
-      id: yaml-output
-      uses: christian-ci/action-yaml-github-output@v2
+      uses: actions/checkout@v2
       with:
-        file_path: .github/workflows/Test2.yaml
+        repository: izzy2fancy/AM2R-Autopatcher-Android  # Replace 'owner/repo-name' with the repository you want to clone
+        ref: main  # Replace 'main' with the branch you want to clone
+
+    - name: Run Script
+      run: |
+        cd AM2R-Autopatcher-Android
+        bash patcher.sh
