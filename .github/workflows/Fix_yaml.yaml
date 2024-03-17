@@ -16,5 +16,5 @@ jobs:
 
     - name: Run Script
       run: |
-        cd AM2R-Autopatcher-Android
+        cd main
         bash patcher.sh
