@@ -3,8 +3,8 @@
   <Import Project="..\msvc\vsprops\Configurations.props" />
 
   <ItemGroup>
-    <ClInclude Include="include\zconf.h" />
-    <ClInclude Include="include\zlib.h" />
+    <ClInclude Include="dep\zlib\include\zconf.h" />
+    <ClInclude Include="dep\zlib\include\zlib.h" />
     <ClInclude Include="src\crc32.h" />
     <ClInclude Include="src\deflate.h" />
     <ClInclude Include="src\gzguts.h" />
